@@ -30,6 +30,23 @@ void error(char *fmt, ...) {
     exit(1);
 }
 
+typedef enum {
+    ND_ADD,
+    ND_SUB,
+    ND_MUL,
+    ND_DIV,
+    ND_NUM,
+} NodeKind;
+
+typdef struct Node Node;
+
+struct Node {
+    NodeKind kind;
+    Node *lhs;
+    Node *rhs;
+    int val;
+};
+
 bool consume(char op) {
     if(token->kind != TK_RESERVED || token->str[0] != op)
         return false;
