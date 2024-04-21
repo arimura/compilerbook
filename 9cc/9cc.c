@@ -38,7 +38,7 @@ typedef enum {
     ND_NUM,
 } NodeKind;
 
-typdef struct Node Node;
+typedef struct Node Node;
 
 struct Node {
     NodeKind kind;
