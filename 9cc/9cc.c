@@ -171,6 +171,7 @@ Token *tokenize(char *p) {
             continue;
         }
 
+        fprintf(stderr, "%s\n", p);
         error("トークナイズできません");
     }
 
