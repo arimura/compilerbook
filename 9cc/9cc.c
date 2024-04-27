@@ -20,6 +20,27 @@ struct Token {
     char *str;
 };
 
+const char* getTokenKindName(TokenKind kind) {
+    switch (kind) {
+        case TK_RESERVED:    return "TK_RESERVED";
+        case TK_NUM:   return "TK_NUM";
+        case TK_EOF: return "TK_EOF";
+        // Add more cases as necessary
+        default:               return "Unknown";
+    }
+}
+
+void printToken(const Token *token) {
+    if (token == NULL) {
+        return;
+    }
+    fprintf(stderr, "Token:\n");
+    fprintf(stderr, "  Kind: %s\n", getTokenKindName(token->kind));
+    fprintf(stderr, "  Value: %d\n", token->val);
+    fprintf(stderr, "  String: %s\n", token->str ? token->str : "NULL");
+    printToken(token->next);
+}
+
 char *user_input;
 Token *token;
 
@@ -205,6 +226,8 @@ int main(int argc, char **argv) {
 
     user_input = argv[1];
     token = tokenize(user_input);
+    // printToken(token);
+
     Node *node = expr();
 
     printf(".intel_syntax noprefix\n");
