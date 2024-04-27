@@ -69,6 +69,34 @@ struct Node {
     int val;
 };
 
+const char* getNodeKindName(NodeKind kind) {
+    switch (kind) {
+        case ND_ADD: return "Add";
+        case ND_SUB: return "Subtract";
+        case ND_MUL: return "Multiply";
+        case ND_DIV: return "Divide";
+        case ND_NUM: return "Number";
+        default:     return "Unknown";
+    }
+}
+
+void printNode(const Node *node, int depth) {
+    if (node == NULL) {
+        return;
+    }
+    for (int i = 0; i < depth; i++) {
+        fprintf(stderr, "  ");
+    }
+
+    if (node->kind == ND_NUM) {
+        fprintf(stderr, "%s (%d)\n", getNodeKindName(node->kind), node->val);
+    } else {
+        fprintf(stderr, "%s\n", getNodeKindName(node->kind));
+        printNode(node->lhs, depth + 1);
+        printNode(node->rhs, depth + 1);
+    }
+}
+
 Node *expr();
 Node *mul();
 Node *primary();
@@ -229,6 +257,7 @@ int main(int argc, char **argv) {
     // printToken(token);
 
     Node *node = expr();
+    printNode(node, 0);
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
