@@ -217,7 +217,7 @@ Node *expr(){
 }
 
 void gen(Node *node) {
-    if (node->kind = ND_NUM) {
+    if (node->kind == ND_NUM) {
         printf("    push %d\n", node->val);
         return;
     }
