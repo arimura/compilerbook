@@ -160,7 +160,12 @@ Token *tokenize(char *p) {
             continue;
         }
 
-        if( *p == '+' || *p == '-') {
+        if( *p == '+' 
+         || *p == '-' 
+         || *p == '*' 
+         || *p == '/' 
+         || *p == ')' 
+         || *p == '(') {
             cur = new_token(TK_RESERVED, cur, p++);
             continue;
         }
@@ -226,8 +231,8 @@ void gen(Node *node) {
     gen(node->lhs);
     gen(node->rhs);
 
-    printf(" pop rdi\n");
-    printf(" pop rax\n");
+    printf("    pop rdi\n");
+    printf("    pop rax\n");
 
     switch (node->kind){
     case ND_ADD:
@@ -238,8 +243,9 @@ void gen(Node *node) {
         break;
     case ND_MUL:
         printf("    imul rax, rdi\n");
+        break;
     case ND_DIV:
-        printf(" cqp\n");
+        printf("    cqo\n");
         printf("    idiv rdi\n");
         break;
     }
