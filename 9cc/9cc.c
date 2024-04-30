@@ -58,6 +58,7 @@ typedef enum {
     ND_MUL,
     ND_DIV,
     ND_NUM,
+    ND_UNARY,
 } NodeKind;
 
 typedef struct Node Node;
@@ -76,6 +77,7 @@ const char* getNodeKindName(NodeKind kind) {
         case ND_MUL: return "Multiply";
         case ND_DIV: return "Divide";
         case ND_NUM: return "Number";
+        case ND_UNARY: return "Unary";
         default:     return "Unknown";
     }
 }
@@ -100,6 +102,7 @@ void printNode(const Node *node, int depth) {
 Node *expr();
 Node *mul();
 Node *primary();
+Node *unary();
 
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs){
     Node *node = calloc(1, sizeof(Node));
@@ -197,13 +200,13 @@ Node *primary(){
 
 
 Node *mul(){
-    Node *node = primary();
+    Node *node = unary();
 
     for (;;){
         if (consume('*'))
-            node = new_node(ND_MUL, node, primary());
+            node = new_node(ND_MUL, node, unary());
         else if (consume('/'))
-            node = new_node(ND_DIV, node, primary());
+            node = new_node(ND_DIV, node, unary());
         else
             return node;
     }
@@ -220,6 +223,14 @@ Node *expr(){
         else
             return node;
     }
+}
+
+Node *unary(){
+    if (consume('+'))
+        return primary();
+    if(consume('-'))
+        return new_node(ND_SUB, new_node_num(0), primary());
+    return primary();
 }
 
 void gen(Node *node) {
