@@ -18,6 +18,7 @@ struct Token {
     Token *next;
     int val;
     char *str;
+    int len;
 };
 
 const char* getTokenKindName(TokenKind kind) {
@@ -120,7 +121,9 @@ Node *new_node_num(int val){
 }
 
 bool consume(char op) {
-    if(token->kind != TK_RESERVED || token->str[0] != op)
+    if(token->kind != TK_RESERVED ||
+       strlen(op) != token->len ||
+       memcmp(token->str, op, token->len))
         return false;
     token = token->next;
     return true;
