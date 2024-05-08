@@ -120,7 +120,7 @@ Node *new_node_num(int val){
     return node;
 }
 
-bool consume(char op) {
+bool consume(char *op) {
     if(token->kind != TK_RESERVED ||
        strlen(op) != token->len ||
        memcmp(token->str, op, token->len))
@@ -192,7 +192,7 @@ Token *tokenize(char *p) {
 
 
 Node *primary(){
-    if (consume('(')) {
+    if (consume("(")) {
         Node *node = expr();
         expect(')');
         return node;
@@ -206,9 +206,9 @@ Node *mul(){
     Node *node = unary();
 
     for (;;){
-        if (consume('*'))
+        if (consume("*"))
             node = new_node(ND_MUL, node, unary());
-        else if (consume('/'))
+        else if (consume("/"))
             node = new_node(ND_DIV, node, unary());
         else
             return node;
@@ -219,9 +219,9 @@ Node *expr(){
     Node *node = mul();
 
     for(;;){
-        if (consume('+'))
+        if (consume("+"))
             node = new_node(ND_ADD, node, mul());
-        else if(consume('-'))
+        else if(consume("-"))
             node = new_node(ND_SUB, node, mul());
         else
             return node;
@@ -229,9 +229,9 @@ Node *expr(){
 }
 
 Node *unary(){
-    if (consume('+'))
+    if (consume("+"))
         return primary();
-    if(consume('-'))
+    if(consume("-"))
         return new_node(ND_SUB, new_node_num(0), primary());
     return primary();
 }
