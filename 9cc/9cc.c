@@ -39,6 +39,7 @@ void printToken(const Token *token) {
     fprintf(stderr, "  Kind: %s\n", getTokenKindName(token->kind));
     fprintf(stderr, "  Value: %d\n", token->val);
     fprintf(stderr, "  String: %s\n", token->str ? token->str : "NULL");
+    fprintf(stderr, "  Length: %d\n", token->len);
     printToken(token->next);
 }
 
@@ -173,6 +174,7 @@ Token *tokenize(char *p) {
          || *p == ')' 
          || *p == '(') {
             cur = new_token(TK_RESERVED, cur, p++);
+            cur->len = 1;
             continue;
         }
 
@@ -275,7 +277,7 @@ int main(int argc, char **argv) {
 
     user_input = argv[1];
     token = tokenize(user_input);
-    // printToken(token);
+    printToken(token);
 
     Node *node = expr();
     printNode(node, 0);
