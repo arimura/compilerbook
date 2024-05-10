@@ -61,6 +61,7 @@ typedef enum {
     ND_DIV,
     ND_NUM,
     ND_UNARY,
+    ND_LESS_THAN,
 } NodeKind;
 
 typedef struct Node Node;
@@ -80,6 +81,7 @@ const char* getNodeKindName(NodeKind kind) {
         case ND_DIV: return "Divide";
         case ND_NUM: return "Number";
         case ND_UNARY: return "Unary";
+        case ND_LESS_THAN: return "LeeThan";
         default:     return "Unknown";
     }
 }
@@ -105,6 +107,7 @@ Node *expr();
 Node *mul();
 Node *primary();
 Node *unary();
+Node *relational();
 
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs){
     Node *node = calloc(1, sizeof(Node));
@@ -172,7 +175,9 @@ Token *tokenize(char *p) {
          || *p == '*' 
          || *p == '/' 
          || *p == ')' 
-         || *p == '(') {
+         || *p == '('
+         || *p == '>'
+         || *p == '<') {
             cur = new_token(TK_RESERVED, cur, p++);
             cur->len = 1;
             continue;
@@ -227,6 +232,11 @@ Node *expr(){
             node = new_node(ND_SUB, node, mul());
         else
             return node;
+    }
+}
+
+Node *relational(){
+    if(consume("<")){
     }
 }
 
