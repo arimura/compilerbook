@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef enum {
+typedef enum
+{
     TK_RESERVED,
     TK_NUM,
     TK_EOF,
@@ -13,7 +14,8 @@ typedef enum {
 
 typedef struct Token Token;
 
-struct Token {
+struct Token
+{
     TokenKind kind;
     Token *next;
     int val;
@@ -21,18 +23,26 @@ struct Token {
     int len;
 };
 
-const char* getTokenKindName(TokenKind kind) {
-    switch (kind) {
-        case TK_RESERVED:    return "TK_RESERVED";
-        case TK_NUM:   return "TK_NUM";
-        case TK_EOF: return "TK_EOF";
-        // Add more cases as necessary
-        default:               return "Unknown";
+const char *getTokenKindName(TokenKind kind)
+{
+    switch (kind)
+    {
+    case TK_RESERVED:
+        return "TK_RESERVED";
+    case TK_NUM:
+        return "TK_NUM";
+    case TK_EOF:
+        return "TK_EOF";
+    // Add more cases as necessary
+    default:
+        return "Unknown";
     }
 }
 
-void printToken(const Token *token) {
-    if (token == NULL) {
+void printToken(const Token *token)
+{
+    if (token == NULL)
+    {
         return;
     }
     fprintf(stderr, "Token:\n");
@@ -46,7 +56,8 @@ void printToken(const Token *token) {
 char *user_input;
 Token *token;
 
-void error(char *fmt, ...) {
+void error(char *fmt, ...)
+{
     va_list ap;
     va_start(ap, fmt);
     vfprintf(stderr, fmt, ap);
@@ -54,7 +65,8 @@ void error(char *fmt, ...) {
     exit(1);
 }
 
-typedef enum {
+typedef enum
+{
     ND_ADD,
     ND_SUB,
     ND_MUL,
@@ -66,37 +78,54 @@ typedef enum {
 
 typedef struct Node Node;
 
-struct Node {
+struct Node
+{
     NodeKind kind;
     Node *lhs;
     Node *rhs;
     int val;
 };
 
-const char* getNodeKindName(NodeKind kind) {
-    switch (kind) {
-        case ND_ADD: return "Add";
-        case ND_SUB: return "Subtract";
-        case ND_MUL: return "Multiply";
-        case ND_DIV: return "Divide";
-        case ND_NUM: return "Number";
-        case ND_UNARY: return "Unary";
-        case ND_LESS_THAN: return "LeeThan";
-        default:     return "Unknown";
+const char *getNodeKindName(NodeKind kind)
+{
+    switch (kind)
+    {
+    case ND_ADD:
+        return "Add";
+    case ND_SUB:
+        return "Subtract";
+    case ND_MUL:
+        return "Multiply";
+    case ND_DIV:
+        return "Divide";
+    case ND_NUM:
+        return "Number";
+    case ND_UNARY:
+        return "Unary";
+    case ND_LESS_THAN:
+        return "LeeThan";
+    default:
+        return "Unknown";
     }
 }
 
-void printNode(const Node *node, int depth) {
-    if (node == NULL) {
+void printNode(const Node *node, int depth)
+{
+    if (node == NULL)
+    {
         return;
     }
-    for (int i = 0; i < depth; i++) {
+    for (int i = 0; i < depth; i++)
+    {
         fprintf(stderr, "  ");
     }
 
-    if (node->kind == ND_NUM) {
+    if (node->kind == ND_NUM)
+    {
         fprintf(stderr, "%s (%d)\n", getNodeKindName(node->kind), node->val);
-    } else {
+    }
+    else
+    {
         fprintf(stderr, "%s\n", getNodeKindName(node->kind));
         printNode(node->lhs, depth + 1);
         printNode(node->rhs, depth + 1);
@@ -104,12 +133,14 @@ void printNode(const Node *node, int depth) {
 }
 
 Node *expr();
+Node *add();
 Node *mul();
 Node *primary();
 Node *unary();
 Node *relational();
 
-Node *new_node(NodeKind kind, Node *lhs, Node *rhs){
+Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
+{
     Node *node = calloc(1, sizeof(Node));
     node->kind = kind;
     node->lhs = lhs;
@@ -117,29 +148,33 @@ Node *new_node(NodeKind kind, Node *lhs, Node *rhs){
     return node;
 }
 
-Node *new_node_num(int val){
+Node *new_node_num(int val)
+{
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_NUM;
     node->val = val;
     return node;
 }
 
-bool consume(char *op) {
-    if(token->kind != TK_RESERVED ||
-       strlen(op) != token->len ||
-       memcmp(token->str, op, token->len))
+bool consume(char *op)
+{
+    if (token->kind != TK_RESERVED ||
+        strlen(op) != token->len ||
+        memcmp(token->str, op, token->len))
         return false;
     token = token->next;
     return true;
 }
 
-void expect(char op){
-    if(token->kind != TK_RESERVED || token->str[0] != op)
+void expect(char op)
+{
+    if (token->kind != TK_RESERVED || token->str[0] != op)
         error("'%c'ではありません", op);
     token = token->next;
 }
 
-int expect_number() {
+int expect_number()
+{
     if (token->kind != TK_NUM)
         error("数ではありません");
     int val = token->val;
@@ -147,11 +182,13 @@ int expect_number() {
     return val;
 }
 
-bool at_eof(){
+bool at_eof()
+{
     return token->kind == TK_EOF;
 }
 
-Token *new_token(TokenKind kind, Token *cur, char *str) {
+Token *new_token(TokenKind kind, Token *cur, char *str)
+{
     Token *tok = calloc(1, sizeof(Token));
     tok->kind = kind;
     tok->str = str;
@@ -159,31 +196,29 @@ Token *new_token(TokenKind kind, Token *cur, char *str) {
     return tok;
 }
 
-Token *tokenize(char *p) {
+Token *tokenize(char *p)
+{
     Token head;
     head.next = NULL;
     Token *cur = &head;
 
-    while(*p) {
-        if(isspace(*p)){
+    while (*p)
+    {
+        if (isspace(*p))
+        {
             p++;
             continue;
         }
 
-        if( *p == '+' 
-         || *p == '-' 
-         || *p == '*' 
-         || *p == '/' 
-         || *p == ')' 
-         || *p == '('
-         || *p == '>'
-         || *p == '<') {
+        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == ')' || *p == '(' || *p == '>' || *p == '<')
+        {
             cur = new_token(TK_RESERVED, cur, p++);
             cur->len = 1;
             continue;
         }
 
-        if(isdigit(*p)) {
+        if (isdigit(*p))
+        {
             cur = new_token(TK_NUM, cur, p);
             cur->val = strtol(p, &p, 10);
             continue;
@@ -197,9 +232,10 @@ Token *tokenize(char *p) {
     return head.next;
 }
 
-
-Node *primary(){
-    if (consume("(")) {
+Node *primary()
+{
+    if (consume("("))
+    {
         Node *node = expr();
         expect(')');
         return node;
@@ -208,11 +244,12 @@ Node *primary(){
     return new_node_num(expect_number());
 }
 
-
-Node *mul(){
+Node *mul()
+{
     Node *node = unary();
 
-    for (;;){
+    for (;;)
+    {
         if (consume("*"))
             node = new_node(ND_MUL, node, unary());
         else if (consume("/"))
@@ -222,45 +259,59 @@ Node *mul(){
     }
 }
 
-Node *expr(){
+Node *add()
+{
     Node *node = mul();
 
-    for(;;){
+    for (;;)
+    {
         if (consume("+"))
             node = new_node(ND_ADD, node, mul());
-        else if(consume("-"))
+        else if (consume("-"))
             node = new_node(ND_SUB, node, mul());
         else
             return node;
     }
 }
 
-Node *relational(){
-    if(consume("<")){
-    }
+Node *expr()
+{
+    return add();
 }
 
-Node *unary(){
+// Node *relational(){
+//     Node *node =
+
+//     if(consume("<")){
+//         return
+//     }
+// }
+
+Node *unary()
+{
     if (consume("+"))
         return primary();
-    if(consume("-"))
+    if (consume("-"))
         return new_node(ND_SUB, new_node_num(0), primary());
     return primary();
 }
 
-void gen(Node *node) {
-    if (node->kind == ND_NUM) {
+void gen(Node *node)
+{
+    if (node->kind == ND_NUM)
+    {
         printf("    push %d\n", node->val);
         return;
     }
-    
+
     gen(node->lhs);
     gen(node->rhs);
 
     printf("    pop rdi\n");
     printf("    pop rax\n");
 
-    switch (node->kind){
+    switch (node->kind)
+    {
     case ND_ADD:
         printf("    add rax, rdi\n");
         break;
@@ -279,8 +330,10 @@ void gen(Node *node) {
     printf(" push rax\n");
 }
 
-int main(int argc, char **argv) {
-    if (argc != 2) {
+int main(int argc, char **argv)
+{
+    if (argc != 2)
+    {
         error("引数の個数が正しくありません");
         return 1;
     }
