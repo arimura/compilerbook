@@ -74,6 +74,7 @@ typedef enum
     ND_NUM,
     ND_UNARY,
     ND_LESS_THAN,
+    ND_EQUAL_LESS_THAN,
 } NodeKind;
 
 typedef struct Node Node;
@@ -103,7 +104,9 @@ const char *getNodeKindName(NodeKind kind)
     case ND_UNARY:
         return "Unary";
     case ND_LESS_THAN:
-        return "LeeThan";
+        return "LessThan";
+    case ND_EQUAL_LESS_THAN:
+        return "EqualLessThan";
     default:
         return "Unknown";
     }
@@ -210,7 +213,21 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == ')' || *p == '(' || *p == '>' || *p == '<')
+        if (strncmp(p, "<=", 2) == 0){
+            p = p + 2;
+            cur = new_token(TK_RESERVED, cur, p);
+            cur->len = 2;
+            continue;
+        } 
+
+        if (*p == '+' 
+        || *p == '-' 
+        || *p == '*' 
+        || *p == '/' 
+        || *p == ')' 
+        || *p == '(' 
+        || *p == '>' 
+        || *p == '<')
         {
             cur = new_token(TK_RESERVED, cur, p++);
             cur->len = 1;
@@ -287,8 +304,8 @@ Node *relational()
     {
         if (consume("<"))
             node = new_node(ND_LESS_THAN, node, add());
-        // else if (consume(">"))
-        //     node = new_node(ND_SUB, node, add());
+        else if (consume("<="))
+            node = new_node(ND_EQUAL_LESS_THAN, node, add());
         else
             return node;
     }
@@ -335,6 +352,11 @@ void gen(Node *node)
     case ND_LESS_THAN:
         printf("    cmp rax, rdi\n");
         printf("    setl al\n");
+        printf("    movzb rax, al\n");
+        break;
+    case ND_EQUAL_LESS_THAN:
+        printf("    cmp rax, rdi\n");
+        printf("    setle al\n");
         printf("    movzb rax, al\n");
         break;
     }
