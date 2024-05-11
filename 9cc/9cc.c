@@ -199,6 +199,10 @@ Token *new_token(TokenKind kind, Token *cur, char *str)
     return tok;
 }
 
+bool startswith(char *p, char *q) {
+  return memcmp(p, q, strlen(q)) == 0;
+}
+
 Token *tokenize(char *p)
 {
     Token head;
@@ -213,21 +217,15 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if (strncmp(p, "<=", 2) == 0){
-            p = p + 2;
+        if (startswith(p, "<=") || startswith(p, ">=")) 
+        {
             cur = new_token(TK_RESERVED, cur, p);
             cur->len = 2;
+            p = p+2;
             continue;
-        } 
+        }
 
-        if (*p == '+' 
-        || *p == '-' 
-        || *p == '*' 
-        || *p == '/' 
-        || *p == ')' 
-        || *p == '(' 
-        || *p == '>' 
-        || *p == '<')
+        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == ')' || *p == '(' || *p == '>' || *p == '<')
         {
             cur = new_token(TK_RESERVED, cur, p++);
             cur->len = 1;
@@ -304,8 +302,12 @@ Node *relational()
     {
         if (consume("<"))
             node = new_node(ND_LESS_THAN, node, add());
+        if (consume(">"))
+            node = new_node(ND_LESS_THAN, add(), node);
         else if (consume("<="))
             node = new_node(ND_EQUAL_LESS_THAN, node, add());
+        else if (consume(">="))
+            node = new_node(ND_EQUAL_LESS_THAN, add(), node);
         else
             return node;
     }
