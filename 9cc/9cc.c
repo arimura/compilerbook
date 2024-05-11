@@ -276,16 +276,23 @@ Node *add()
 
 Node *expr()
 {
-    return add();
+    return relational();
 }
 
-// Node *relational(){
-//     Node *node =
+Node *relational()
+{
+    Node *node = add();
 
-//     if(consume("<")){
-//         return
-//     }
-// }
+    for (;;)
+    {
+        if (consume("<"))
+            node = new_node(ND_LESS_THAN, node, add());
+        // else if (consume(">"))
+        //     node = new_node(ND_SUB, node, add());
+        else
+            return node;
+    }
+}
 
 Node *unary()
 {
@@ -325,9 +332,14 @@ void gen(Node *node)
         printf("    cqo\n");
         printf("    idiv rdi\n");
         break;
+    case ND_LESS_THAN:
+        printf("    cmp rax, rdi\n");
+        printf("    setl al\n");
+        printf("    movzb rax, al\n");
+        break;
     }
 
-    printf(" push rax\n");
+    printf("    push rax\n");
 }
 
 int main(int argc, char **argv)
