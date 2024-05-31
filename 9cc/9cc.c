@@ -8,6 +8,7 @@
 typedef enum
 {
     TK_RESERVED,
+    TK_INDENT,
     TK_NUM,
     TK_EOF,
 } TokenKind;
@@ -23,6 +24,41 @@ struct Token
     int len;
 };
 
+char *user_input;
+Token *token;
+
+void error(char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+    exit(1);
+}
+
+typedef enum
+{
+    ND_ADD,
+    ND_SUB,
+    ND_MUL,
+    ND_DIV,
+    ND_NUM,
+    ND_UNARY,
+    ND_LESS_THAN,
+    ND_EQUAL_LESS_THAN,
+} NodeKind;
+
+typedef struct Node Node;
+
+struct Node
+{
+    NodeKind kind; Node *lhs; Node *rhs;
+    int val;
+};
+
+/*
+* Print Util
+*/
 const char *getTokenKindName(TokenKind kind)
 {
     switch (kind)
@@ -53,39 +89,6 @@ void printToken(const Token *token)
     printToken(token->next);
 }
 
-char *user_input;
-Token *token;
-
-void error(char *fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    vfprintf(stderr, fmt, ap);
-    fprintf(stderr, "\n");
-    exit(1);
-}
-
-typedef enum
-{
-    ND_ADD,
-    ND_SUB,
-    ND_MUL,
-    ND_DIV,
-    ND_NUM,
-    ND_UNARY,
-    ND_LESS_THAN,
-    ND_EQUAL_LESS_THAN,
-} NodeKind;
-
-typedef struct Node Node;
-
-struct Node
-{
-    NodeKind kind;
-    Node *lhs;
-    Node *rhs;
-    int val;
-};
 
 const char *getNodeKindName(NodeKind kind)
 {
@@ -135,13 +138,9 @@ void printNode(const Node *node, int depth)
     }
 }
 
-Node *expr();
-Node *add();
-Node *mul();
-Node *primary();
-Node *unary();
-Node *relational();
-
+/*
+* Tokenizer
+*/
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
     Node *node = calloc(1, sizeof(Node));
@@ -217,6 +216,12 @@ Token *tokenize(char *p)
             continue;
         }
 
+        if ('a' <= *p && *p <= 'z'){
+            cur = new_token(TK_INDENT, cur, p++);
+            cur->len = 1;
+            continue;
+        }
+
         if (startswith(p, "<=") || startswith(p, ">=")) 
         {
             cur = new_token(TK_RESERVED, cur, p);
@@ -246,6 +251,17 @@ Token *tokenize(char *p)
     new_token(TK_EOF, cur, p);
     return head.next;
 }
+
+
+/*
+* Parser
+*/
+Node *expr();
+Node *add();
+Node *mul();
+Node *primary();
+Node *unary();
+Node *relational();
 
 Node *primary()
 {
