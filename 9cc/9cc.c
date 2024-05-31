@@ -46,6 +46,8 @@ typedef enum
     ND_UNARY,
     ND_LESS_THAN,
     ND_EQUAL_LESS_THAN,
+    ND_EQ,
+    ND_NE,
 } NodeKind;
 
 typedef struct Node Node;
@@ -110,6 +112,10 @@ const char *getNodeKindName(NodeKind kind)
         return "LessThan";
     case ND_EQUAL_LESS_THAN:
         return "EqualLessThan";
+    case ND_EQ:
+        return "Equal";
+    case ND_NE:
+        return "NotEqual";
     default:
         return "Unknown";
     }
@@ -222,7 +228,10 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if (startswith(p, "<=") || startswith(p, ">=")) 
+        if (startswith(p, "<=") 
+        || startswith(p, ">=") 
+        || startswith(p, "==")
+        || startswith(p, "!=")) 
         {
             cur = new_token(TK_RESERVED, cur, p);
             cur->len = 2;
@@ -262,13 +271,28 @@ Node *mul();
 Node *primary();
 Node *unary();
 Node *relational();
+Node *equality();
 
 Node *code[100];
 
 Node *expr()
 {
-    return relational();
+    return equality();
 }
+
+Node *equality(){
+    Node *node = relational();
+
+    for (;;){
+        if(consume("=="))
+            node = new_node(ND_EQ, node, relational());
+        else if(consume("!="))
+            node = new_node(ND_NE, node, relational());
+        else
+            return node;
+    } 
+}
+
 
 Node *relational()
 {
@@ -278,7 +302,7 @@ Node *relational()
     {
         if (consume("<"))
             node = new_node(ND_LESS_THAN, node, add());
-        if (consume(">"))
+        else if (consume(">"))
             node = new_node(ND_LESS_THAN, add(), node);
         else if (consume("<="))
             node = new_node(ND_EQUAL_LESS_THAN, node, add());
@@ -378,6 +402,16 @@ void gen(Node *node)
     case ND_EQUAL_LESS_THAN:
         printf("    cmp rax, rdi\n");
         printf("    setle al\n");
+        printf("    movzb rax, al\n");
+        break;
+    case ND_EQ:
+        printf("    cmp rax, rdi\n");
+        printf("    sete al\n");
+        printf("    movzb rax, al\n");
+        break;
+    case ND_NE:
+        printf("    cmp rax, rdi\n");
+        printf("    setne al\n");
         printf("    movzb rax, al\n");
         break;
     }
