@@ -1,5 +1,7 @@
 CFLAGS=-std=c11 -g -static
 
+all: 9cc test
+
 9cc: 9cc.c
 
 test: 9cc
