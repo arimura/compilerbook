@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <execinfo.h>
+#include <unistd.h>
+
 
 typedef enum
 {
@@ -260,7 +263,9 @@ Token *tokenize(char *p)
         || *p == '(' 
         || *p == '>' 
         || *p == '<'
-        || *p == '=')
+        || *p == '='
+        || *p == ';'
+        )
         {
             cur = new_token(TK_RESERVED, cur, p++);
             cur->len = 1;
@@ -310,8 +315,9 @@ Node *stmt(){
 
 void program(){
     int i = 0;
-    while(!at_eof())
+    while(!at_eof()){
         code[i++] = stmt();
+    }
     code[i] = NULL;
 }
 
@@ -430,6 +436,21 @@ void gen(Node *node)
     case ND_NUM:
         printf("    push %d\n", node->val);
         return;
+    case ND_LVAR:
+        gen_lval(node);
+        printf("    pop rax\n");
+        printf("    mov rax, [rax]\n");
+        printf("    push rax\n");
+        return;
+    case ND_ASSIGN:
+        gen_lval(node->lhs);
+        gen(node->rhs);
+
+        printf("    pop rdi\n");
+        printf("    pop rax\n");
+        printf("    mov [rax], rdi\n");
+        printf("    push rdi\n");
+        return;
     }
 
     gen(node->lhs);
@@ -489,17 +510,24 @@ int main(int argc, char **argv)
     user_input = argv[1];
     token = tokenize(user_input);
     // printToken(token);
-
-    Node *node = expr();
-    // printNode(node, 0);
+    program();
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
     printf("main:\n");
 
-    gen(node);
+    //prologue
+    printf("    push rbp\n");
+    printf("    mov rbp, rsp\n");
+    printf("    sub rsp, 208\n");
 
-    printf("    pop rax\n");
+    for(int i = 0; code[i]; i++){
+        gen(code[i]);
+        printf("    pop rax\n");
+    }
+
+    printf("    mov rsp, rbp\n");
+    printf("    pop rbp\n");
     printf("    ret\n");
     return 0;
 }
