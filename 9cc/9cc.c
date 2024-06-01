@@ -439,28 +439,25 @@ Node *primary()
 
     Token *tok = consume_ident();
     if(tok){
-        //print token to stderr
-        fprintf(stderr, "token: %.*s\n", tok->len, tok->str);
-
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_LVAR;
 
         LVar *lvar = find_lvar(tok);
         if(lvar) {
-            fprintf(stderr, "found lvar: %.*s\n", lvar->len, lvar->name);
             node->offset = lvar->offset;
         }else{
-            fprintf(stderr, "not found lvar: %.*s\n", tok->len, tok->str);
             lvar = calloc(1, sizeof(LVar));
             lvar->next = locals;
             lvar->name = tok->str;
             lvar->len = tok->len;
-            fprintf(stderr, "hoge hoge");
-            lvar->offset = locals->offset + 8;
-            fprintf(stderr, "Fuga Fuga");
+            //To be refactored?
+            if(locals){
+                lvar->offset = locals->offset + 8;
+            }else{
+                lvar->offset = 8;
+            }
             node->offset = lvar->offset;
             locals = lvar;
-            fprintf(stderr, "add lvar: %.*s\n", lvar->len, lvar->name);
         }
         return node;
     }
