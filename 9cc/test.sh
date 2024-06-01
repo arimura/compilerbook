@@ -41,4 +41,7 @@ assert 1 "(3+2)==(10-5) ;"
 assert 1 "a=1; 1;"
 assert 1 "a=1; a;"
 assert 6 "a=2; b=4; a+b;"
+assert 1 "return 1;"
+assert 10 "return 10; return 1;"
+assert 23 "a=(10+13); return a;"
 echo OK

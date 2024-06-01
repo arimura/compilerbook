@@ -83,6 +83,8 @@ LVar *find_lvar(Token *tok) {
     return NULL;
 }
 
+Node *code[100];
+
 /*
 * Print Util
 */
@@ -181,6 +183,12 @@ void printNode(const Node *node, int depth)
 void printLocals(){
     for(LVar *var = locals; var; var = var->next){
         fprintf(stderr, "name: %s, offset: %d\n", var->name, var->offset);
+    }
+}
+
+void printCode(){
+    for(int i = 0; code[i]; i++){
+        printNode(code[i], 0);
     }
 }
 
@@ -354,7 +362,6 @@ Node *relational();
 Node *equality();
 Node *assign();
 
-Node *code[100];
 
 Node *expr()
 {
@@ -536,7 +543,8 @@ void gen(Node *node)
         printf("    pop rax\n");
         printf("    mov rsp, rbp\n");
         printf("    pop rbp\n");
-        printf("    rent\n");
+        printf("    ret\n");
+        return;
     }
 
     gen(node->lhs);
@@ -598,6 +606,7 @@ int main(int argc, char **argv)
     // printToken(token);
     program();
     // printLocals();
+    // printCode();
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
