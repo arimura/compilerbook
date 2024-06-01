@@ -48,14 +48,19 @@ typedef enum
     ND_EQUAL_LESS_THAN,
     ND_EQ,
     ND_NE,
+    ND_ASSIGN,
+    ND_LVAR,
 } NodeKind;
 
 typedef struct Node Node;
 
 struct Node
 {
-    NodeKind kind; Node *lhs; Node *rhs;
+    NodeKind kind; 
+    Node *lhs;
+    Node *rhs;
     int val;
+    int offset;
 };
 
 /*
@@ -174,6 +179,14 @@ bool consume(char *op)
     return true;
 }
 
+Token *consume_ident(){
+    if (token->kind != TK_INDENT)
+        return NULL;
+    Token *t = token;
+    token = token->next;
+    return t;
+}
+
 void expect(char op)
 {
     if (token->kind != TK_RESERVED || token->str[0] != op)
@@ -239,7 +252,15 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == ')' || *p == '(' || *p == '>' || *p == '<')
+        if (*p == '+' 
+        || *p == '-'
+        || *p == '*' 
+        || *p == '/' 
+        || *p == ')' 
+        || *p == '(' 
+        || *p == '>' 
+        || *p == '<'
+        || *p == '=')
         {
             cur = new_token(TK_RESERVED, cur, p++);
             cur->len = 1;
@@ -272,12 +293,33 @@ Node *primary();
 Node *unary();
 Node *relational();
 Node *equality();
+Node *assign();
 
 Node *code[100];
 
 Node *expr()
 {
-    return equality();
+    return assign();
+}
+
+Node *stmt(){
+    Node *node = expr();
+    expect(';');
+    return node;
+}
+
+void program(){
+    int i = 0;
+    while(!at_eof())
+        code[i++] = stmt();
+    code[i] = NULL;
+}
+
+Node *assign(){
+    Node *node = equality();
+    if(consume("="))
+        node = new_node(ND_ASSIGN, node, assign());
+    return node;
 }
 
 Node *equality(){
@@ -362,13 +404,30 @@ Node *primary()
         return node;
     }
 
+    Token *tok = consume_ident();
+    if(tok){
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_LVAR;
+        node->offset = (tok->str[0] - 'a' + 1) * 8;
+        return node;
+    }
+
     return new_node_num(expect_number());
+}
+
+void gen_lval(Node *node){
+    if(node->kind != ND_LVAR)
+        error("代入の左辺値が変数ではありません");
+
+    printf("    mov rax, rbp\n");
+    printf("    sub rax, %d\n", node->offset);
+    printf("    push rax\n");
 }
 
 void gen(Node *node)
 {
-    if (node->kind == ND_NUM)
-    {
+    switch(node->kind){
+    case ND_NUM:
         printf("    push %d\n", node->val);
         return;
     }
@@ -429,10 +488,10 @@ int main(int argc, char **argv)
 
     user_input = argv[1];
     token = tokenize(user_input);
-    printToken(token);
+    // printToken(token);
 
     Node *node = expr();
-    printNode(node, 0);
+    // printNode(node, 0);
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
