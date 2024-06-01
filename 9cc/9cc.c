@@ -7,7 +7,6 @@
 #include <execinfo.h>
 #include <unistd.h>
 
-
 typedef enum
 {
     TK_RESERVED,
@@ -66,6 +65,22 @@ struct Node
     int offset;
 };
 
+typedef struct LVar LVar;
+struct LVar {
+    LVar *next;
+    char *name;
+    int len;
+    int offset;
+};
+LVar *locals;
+
+LVar *find_lvar(Token *tok) {
+    for (LVar *var = locals; var; var = var->next)
+        if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
+            return var;
+    return NULL;
+}
+
 /*
 * Print Util
 */
@@ -79,6 +94,8 @@ const char *getTokenKindName(TokenKind kind)
         return "TK_NUM";
     case TK_EOF:
         return "TK_EOF";
+    case TK_INDENT:
+        return "TK_INDENT";
     // Add more cases as necessary
     default:
         return "Unknown";
@@ -124,6 +141,10 @@ const char *getNodeKindName(NodeKind kind)
         return "Equal";
     case ND_NE:
         return "NotEqual";
+    case ND_ASSIGN:
+        return "Assign";
+    case ND_LVAR:
+        return "LocalVariable";
     default:
         return "Unknown";
     }
@@ -149,6 +170,12 @@ void printNode(const Node *node, int depth)
         fprintf(stderr, "%s\n", getNodeKindName(node->kind));
         printNode(node->lhs, depth + 1);
         printNode(node->rhs, depth + 1);
+    }
+}
+
+void printLocals(){
+    for(LVar *var = locals; var; var = var->next){
+        fprintf(stderr, "name: %s, offset: %d\n", var->name, var->offset);
     }
 }
 
@@ -412,9 +439,29 @@ Node *primary()
 
     Token *tok = consume_ident();
     if(tok){
+        //print token to stderr
+        fprintf(stderr, "token: %.*s\n", tok->len, tok->str);
+
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_LVAR;
-        node->offset = (tok->str[0] - 'a' + 1) * 8;
+
+        LVar *lvar = find_lvar(tok);
+        if(lvar) {
+            fprintf(stderr, "found lvar: %.*s\n", lvar->len, lvar->name);
+            node->offset = lvar->offset;
+        }else{
+            fprintf(stderr, "not found lvar: %.*s\n", tok->len, tok->str);
+            lvar = calloc(1, sizeof(LVar));
+            lvar->next = locals;
+            lvar->name = tok->str;
+            lvar->len = tok->len;
+            fprintf(stderr, "hoge hoge");
+            lvar->offset = locals->offset + 8;
+            fprintf(stderr, "Fuga Fuga");
+            node->offset = lvar->offset;
+            locals = lvar;
+            fprintf(stderr, "add lvar: %.*s\n", lvar->len, lvar->name);
+        }
         return node;
     }
 
@@ -509,8 +556,9 @@ int main(int argc, char **argv)
 
     user_input = argv[1];
     token = tokenize(user_input);
-    // printToken(token);
+    printToken(token);
     program();
+    printLocals();
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
