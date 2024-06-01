@@ -38,4 +38,6 @@ assert 0 "1==2;"
 assert 1 "2!=1;"
 assert 0 "2!=2;"
 assert 1 "(3+2)==(10-5) ;"
+assert 1 "a=1; a;"
+assert 6 "a=2; b=4; a+b;"
 echo OK
