@@ -313,9 +313,14 @@ Token *tokenize(char *p)
            continue; 
         }
 
-        if ('a' <= *p && *p <= 'z'){
-            cur = new_token(TK_INDENT, cur, p++);
-            cur->len = 1;
+        if (is_ident1(*p)){
+            char *cnt = p;
+            do {
+                cnt++;
+            } while (is_ident2(*cnt));
+            cur = new_token(TK_INDENT, cur, p);
+            cur->len = cnt - p;
+            p = cnt; 
             continue;
         }
 
