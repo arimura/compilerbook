@@ -13,6 +13,8 @@ typedef enum
     TK_INDENT,
     TK_NUM,
     TK_RETURN,
+    TK_IF,
+    TK_ELSE,
     TK_EOF,
 } TokenKind;
 
@@ -54,6 +56,8 @@ typedef enum
     ND_ASSIGN,
     ND_LVAR,
     ND_RETURN,
+    ND_IF,
+    ND_ELSE,
 } NodeKind;
 
 typedef struct Node Node;
@@ -102,6 +106,10 @@ const char *getTokenKindName(TokenKind kind)
         return "TK_INDENT";
     case TK_RETURN:
         return "TK_RETUREN";
+    case TK_IF:
+        return "TK_IF";
+    case TK_ELSE:
+        return "TK_ELSE";
     default:
         return "Unknown";
     }
@@ -152,6 +160,10 @@ const char *getNodeKindName(NodeKind kind)
         return "LocalVariable";
     case ND_RETURN:
         return "Return";
+    case ND_IF:
+        return "If";
+    case ND_ELSE:
+        return "Else"; 
     default:
         return "Unknown";
     }
