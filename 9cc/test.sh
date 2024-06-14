@@ -45,5 +45,5 @@ assert 1 "return 1;"
 assert 10 "return 10; return 1;"
 assert 23 "a=(10+13); return a;"
 assert 23 "axw1_3=(10+13); return axw1_3;"
-assert 2 "if (1) 2 else 3"
+assert 2 "if (1) 2; ;"
 echo OK

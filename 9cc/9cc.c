@@ -422,7 +422,14 @@ Node *expr()
 Node *stmt(){
     Node *node;
     
-    if(consume_kind(TK_RETURN)){
+    if(consume_kind(TK_IF)){
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_IF;
+        expect('(');
+        node->cond = expr();
+        expect(')');
+        node->then = stmt();
+    }else if(consume_kind(TK_RETURN)){
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
         node->lhs = expr();
@@ -568,6 +575,11 @@ void gen_lval(Node *node){
     printf("    push rax\n");
 }
 
+static int count(void) {
+    static int i = 1;
+    return i++;
+}
+
 void gen(Node *node)
 {
     switch(node->kind){
@@ -595,6 +607,15 @@ void gen(Node *node)
         printf("    mov rsp, rbp\n");
         printf("    pop rbp\n");
         printf("    ret\n");
+        return;
+    case ND_IF:
+        int c = count();
+        gen(node->cond);
+        printf("    pop rax\n");
+        printf("    cmp rax, 0\n");
+        printf("    je  .Lend%d\n", c);
+        gen(node->then);
+        printf(".Lend%d:\n",c);
         return;
     }
 
