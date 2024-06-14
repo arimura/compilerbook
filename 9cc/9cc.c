@@ -332,6 +332,20 @@ Token *tokenize(char *p)
            continue; 
         }
 
+        if (strncmp(p, "if", 2) == 0 && !is_alnum(p[2])){
+            cur = new_token(TK_IF, cur, p);
+            cur->len = 2;
+            p = p + 2;
+            continue;
+        }
+
+        if (strncmp(p, "else", 4) == 0 && !is_alnum(p[4])){
+            cur = new_token(TK_ELSE, cur, p);
+            cur->len = 4;
+            p = p + 4;
+            continue;
+        }
+
         if (is_ident1(*p)){
             char *cnt = p;
             do {
@@ -640,7 +654,7 @@ int main(int argc, char **argv)
 
     user_input = argv[1];
     token = tokenize(user_input);
-    // printToken(token);
+    printToken(token);
     program();
     // printLocals();
     // printCode();
