@@ -69,6 +69,13 @@ struct Node
     Node *rhs;
     int val;
     int offset;
+
+    //"if" or "for" statement
+    Node *cond;
+    Node *then;
+    Node *els;
+    Node *init;
+    Node *inc;
 };
 
 typedef struct LVar LVar;
