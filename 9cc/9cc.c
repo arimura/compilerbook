@@ -433,11 +433,12 @@ Node *stmt(){
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
         node->lhs = expr();
+        expect(';');
     }else{
         node = expr();
+        expect(';');
     } 
     
-    expect(';');
     return node;
 }
 
