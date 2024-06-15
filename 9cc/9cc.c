@@ -429,6 +429,9 @@ Node *stmt(){
         node->cond = expr();
         expect(')');
         node->then = stmt();
+        if(consume_kind(TK_ELSE)){
+            node->els = stmt();
+        }
     }else if(consume_kind(TK_RETURN)){
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
@@ -614,8 +617,13 @@ void gen(Node *node)
         gen(node->cond);
         printf("    pop rax\n");
         printf("    cmp rax, 0\n");
-        printf("    je  .Lend%d\n", c);
+        printf("    je  .Lelse%d\n", c);
         gen(node->then);
+        printf("    jmp  .Lend%d\n", c);
+        printf(".Lelse%d:\n",c);
+        if(node->els){
+            gen(node->els);
+        }
         printf(".Lend%d:\n",c);
         return;
     }
@@ -676,7 +684,7 @@ int main(int argc, char **argv)
 
     user_input = argv[1];
     token = tokenize(user_input);
-    printToken(token);
+    // printToken(token);
     program();
     // printLocals();
     // printCode();
