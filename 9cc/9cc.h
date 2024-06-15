@@ -8,6 +8,7 @@ typedef enum
     TK_IF,
     TK_ELSE,
     TK_EOF,
+    TK_WHILE,
 } TokenKind;
 
 typedef struct Token Token;
@@ -38,6 +39,7 @@ typedef enum
     ND_RETURN,
     ND_IF,
     ND_ELSE,
+    ND_WHILE,
 } NodeKind;
 
 typedef struct Node Node;

@@ -52,6 +52,8 @@ const char *getTokenKindName(TokenKind kind)
         return "TK_IF";
     case TK_ELSE:
         return "TK_ELSE";
+    case TK_WHILE:
+        return "TK_WHILE";
     default:
         return "Unknown";
     }
@@ -105,6 +107,8 @@ const char *getNodeKindName(NodeKind kind)
         return "If";
     case ND_ELSE:
         return "Else"; 
+    case ND_WHILE:
+        return "While";
     default:
         return "Unknown";
     }
@@ -277,6 +281,13 @@ Token *tokenize(char *p)
             cur = new_token(TK_ELSE, cur, p);
             cur->len = 4;
             p = p + 4;
+            continue;
+        }
+
+        if (strncmp(p, "while", 5) == 0 && !is_alnum(p[5])){
+            cur = new_token(TK_WHILE, cur, p);
+            cur->len = 5;
+            p = p + 5;
             continue;
         }
 
