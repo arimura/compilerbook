@@ -6,28 +6,7 @@
 #include <string.h>
 #include <execinfo.h>
 #include <unistd.h>
-
-typedef enum
-{
-    TK_RESERVED,
-    TK_INDENT,
-    TK_NUM,
-    TK_RETURN,
-    TK_IF,
-    TK_ELSE,
-    TK_EOF,
-} TokenKind;
-
-typedef struct Token Token;
-
-struct Token
-{
-    TokenKind kind;
-    Token *next;
-    int val;
-    char *str;
-    int len;
-};
+#include "9cc.h"
 
 char *user_input;
 Token *token;
@@ -41,50 +20,6 @@ void error(char *fmt, ...)
     exit(1);
 }
 
-typedef enum
-{
-    ND_ADD,
-    ND_SUB,
-    ND_MUL,
-    ND_DIV,
-    ND_NUM,
-    ND_UNARY,
-    ND_LESS_THAN,
-    ND_EQUAL_LESS_THAN,
-    ND_EQ,
-    ND_NE,
-    ND_ASSIGN,
-    ND_LVAR,
-    ND_RETURN,
-    ND_IF,
-    ND_ELSE,
-} NodeKind;
-
-typedef struct Node Node;
-
-struct Node
-{
-    NodeKind kind; 
-    Node *lhs;
-    Node *rhs;
-    int val;
-    int offset;
-
-    //"if" or "for" statement
-    Node *cond;
-    Node *then;
-    Node *els;
-    Node *init;
-    Node *inc;
-};
-
-typedef struct LVar LVar;
-struct LVar {
-    LVar *next;
-    char *name;
-    int len;
-    int offset;
-};
 LVar *locals;
 
 LVar *find_lvar(Token *tok) {
@@ -135,7 +70,6 @@ void printToken(const Token *token)
     fprintf(stderr, "  Length: %d\n", token->len);
     printToken(token->next);
 }
-
 
 const char *getNodeKindName(NodeKind kind)
 {
