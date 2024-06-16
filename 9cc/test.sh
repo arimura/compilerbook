@@ -50,4 +50,5 @@ assert 1 "hoge=1; if (0) hoge=3; hoge;"
 assert 3 "hoge=1; if (0) hoge=2; else hoge=3; hoge;"
 assert 2 "while (0) a=1; 2;"
 assert 2 "a=0; while (a != 2) a = a + 1; a;"
+assert 14 "a=10; for(b=0;b < 4; b = b + 1) a = a + 1; a;" 
 echo OK

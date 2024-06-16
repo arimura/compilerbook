@@ -408,10 +408,11 @@ Node *stmt(){
             node->cond = expr();
             expect(';');
         }
-        if(!consume(";")){
+        if(!consume(")")){
             node->inc = expr();
-            expect(';');
+            expect(')');
         }
+        node->then = stmt();
     }else if(consume_kind(TK_RETURN)){
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
@@ -560,10 +561,10 @@ int main(int argc, char **argv)
 
     user_input = argv[1];
     token = tokenize(user_input);
-    // printToken(token);
+    printToken(token);
     program();
     // printLocals();
-    // printCode();
+    printCode();
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
