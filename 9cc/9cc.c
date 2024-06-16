@@ -54,6 +54,8 @@ const char *getTokenKindName(TokenKind kind)
         return "TK_ELSE";
     case TK_WHILE:
         return "TK_WHILE";
+    case TK_FOR:
+        return "TK_FOR";
     default:
         return "Unknown";
     }
@@ -109,6 +111,8 @@ const char *getNodeKindName(NodeKind kind)
         return "Else"; 
     case ND_WHILE:
         return "While";
+    case ND_FOR:
+        return "For";
     default:
         return "Unknown";
     }
@@ -291,6 +295,13 @@ Token *tokenize(char *p)
             continue;
         }
 
+        if(strncmp(p, "for", 3) == 0 && !is_alnum(p[3])){
+            cur = new_token(TK_FOR, cur, p);
+            cur->len = 3;
+            p = p + 3;
+            continue;
+        }
+
         if (is_ident1(*p)){
             char *cnt = p;
             do {
@@ -384,6 +395,22 @@ Node *stmt(){
         node->cond = expr();
         expect(')');
         node->then = stmt();
+    }else if(consume_kind(TK_FOR)){
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_FOR;
+        expect('(');
+        if(!consume(";")){
+            node->init = expr();
+            expect(';');
+        }
+        if(!consume(";")){
+            node->cond = expr();
+            expect(';');
+        }
+        if(!consume(";")){
+            node->inc = expr();
+            expect(';');
+        }
     }else if(consume_kind(TK_RETURN)){
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
