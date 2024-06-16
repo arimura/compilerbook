@@ -578,6 +578,17 @@ void gen(Node *node)
         }
         printf(".Lend%d:\n",c);
         return;
+    case ND_WHILE:
+        int cw = count();
+        printf(".Lbegin%d:\n", cw);
+        gen(node->cond);
+        printf("    pop rax\n");
+        printf("    cmp rax, 0\n");
+        printf("    je .Lend%d\n", cw);
+        gen(node->then);
+        printf("    jmp .Lbegin%d\n", cw);
+        printf(".Lend%d:\n", cw);
+        return;
     }
 
     gen(node->lhs);

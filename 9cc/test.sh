@@ -48,4 +48,6 @@ assert 23 "axw1_3=(10+13); return axw1_3;"
 assert 3 "hoge=1; if (1) hoge=3; hoge;"
 assert 1 "hoge=1; if (0) hoge=3; hoge;"
 assert 3 "hoge=1; if (0) hoge=2; else hoge=3; hoge;"
+assert 2 "while (0) a=1; 2;"
+assert 2 "a=0; while (a != 2) a = a + 1; a;"
 echo OK
