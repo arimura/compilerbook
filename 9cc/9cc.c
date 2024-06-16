@@ -561,10 +561,10 @@ int main(int argc, char **argv)
 
     user_input = argv[1];
     token = tokenize(user_input);
-    printToken(token);
+    // printToken(token);
     program();
     // printLocals();
-    printCode();
+    // printCode();
 
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
