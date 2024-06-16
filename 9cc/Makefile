@@ -2,7 +2,7 @@ CFLAGS=-std=c11 -g -static
 
 all: 9cc test
 
-9cc: 9cc.c
+9cc: 9cc.c codegen.c
 
 test: 9cc
 	./test.sh

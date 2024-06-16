@@ -1,3 +1,4 @@
+#pragma once
 
 typedef enum
 {
@@ -69,3 +70,6 @@ struct LVar {
     int len;
     int offset;
 };
+
+
+void error(char *fmt, ...);
