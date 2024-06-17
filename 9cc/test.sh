@@ -52,4 +52,8 @@ assert 2 "while (0) a=1; 2;"
 assert 2 "a=0; while (a != 2) a = a + 1; a;"
 assert 14 "a=10; for(b=0;b < 4; b = b + 1) a = a + 1; a;" 
 assert 14 "a=10; b=0; for(;b < 4; b = b + 1) a = a + 1; a;" 
+assert 1 "{1;}1;"
+assert 2 "{a=2;} a;"
+assert 2 "{}2;"
+assert 4 "a=0;b=0;while(a != 2){a = a + 1; b = b + 2;} b;"
 echo OK
