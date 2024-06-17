@@ -335,6 +335,8 @@ Token *tokenize(char *p)
         || *p == '<'
         || *p == '='
         || *p == ';'
+        || *p == '{'
+        || *p == '}'
         )
         {
             cur = new_token(TK_RESERVED, cur, p++);
@@ -418,6 +420,17 @@ Node *stmt(){
         node->kind = ND_RETURN;
         node->lhs = expr();
         expect(';');
+    }else if(consume("{")){
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_BLOCK;
+        Node head = {};
+        Node *cur = &head;
+
+        while(!consume("}")){
+            cur->next = stmt();
+            cur = cur->next;
+        }
+        node->body = head.next;
     }else{
         node = expr();
         expect(';');
