@@ -44,6 +44,7 @@ typedef enum
     ND_WHILE,
     ND_FOR,
     ND_BLOCK,
+    ND_FUNCALL,
 } NodeKind;
 
 typedef struct Node Node;
