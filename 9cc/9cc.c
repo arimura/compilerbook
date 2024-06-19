@@ -114,6 +114,8 @@ const char *getNodeKindName(NodeKind kind)
         return "While";
     case ND_FOR:
         return "For";
+    case ND_FUNCALL:
+        return "Funcall";
     default:
         return "Unknown";
     }

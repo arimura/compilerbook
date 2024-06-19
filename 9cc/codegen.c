@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "codegen.h"
+#include <string.h>
 
 void gen_lval(Node *node){
     if(node->kind != ND_LVAR)
@@ -95,6 +96,12 @@ void gen(Node *node)
             printf("    pop rax\n");
             n = n->next;
         }
+        return;
+    case ND_FUNCALL:
+        // char *name;
+        // strncpy(name, node->funcname, node->funcname_len);
+        // name[node->funcname_len] = '\0';
+        printf("    call %s\n", "foo");
         return;
     }
 
