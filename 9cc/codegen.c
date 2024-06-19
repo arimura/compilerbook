@@ -99,6 +99,13 @@ void gen(Node *node)
         }
         return;
     case ND_FUNCALL:
+        Node *a = node->args;
+        // while(a && i < 6){
+        //     gen(a);
+
+        // }
+
+
         char *name = malloc((node->funcname_len + 1) * sizeof(char));
         strncpy(name, node->funcname, node->funcname_len);
         name[node->funcname_len] = '\0';
