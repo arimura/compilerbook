@@ -71,6 +71,7 @@ struct Node
     //To be refactored?
     char *funcname;
     int funcname_len;
+    Node *args;
 };
 
 typedef struct LVar LVar;

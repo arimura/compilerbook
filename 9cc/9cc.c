@@ -469,7 +469,6 @@ Node *equality(){
     } 
 }
 
-
 Node *relational()
 {
     Node *node = add();
@@ -546,7 +545,14 @@ Node *primary()
             node->kind = ND_FUNCALL;
             node->funcname = tok->str;
             node->funcname_len = tok->len;
-            expect(')');
+            Node head = {};
+            Node *cur = &head;    
+
+            while(!consume(")")){
+                cur->next = expr();
+                cur = cur->next;                
+            }
+            node->args = head.next;
             return node;
         }
 
