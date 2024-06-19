@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "codegen.h"
 #include <string.h>
+#include <stdlib.h>
 
 void gen_lval(Node *node){
     if(node->kind != ND_LVAR)
@@ -98,9 +99,9 @@ void gen(Node *node)
         }
         return;
     case ND_FUNCALL:
-        // char *name;
-        // strncpy(name, node->funcname, node->funcname_len);
-        // name[node->funcname_len] = '\0';
+        char *name = malloc((node->funcname_len + 1) * sizeof(char));
+        strncpy(name, node->funcname, node->funcname_len);
+        name[node->funcname_len] = '\0';
         printf("    call %s\n", "foo");
         return;
     }
