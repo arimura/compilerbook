@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "__node_handle": "c",
-        "codegen.h": "c"
+        "codegen.h": "c",
+        "stdio.h": "c"
     }
 }

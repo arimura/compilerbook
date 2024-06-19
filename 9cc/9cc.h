@@ -67,6 +67,10 @@ struct Node
     //block body and statements
     Node *body;
     Node *next;
+
+    //To be refactored?
+    char *funcname;
+    int funcname_len;
 };
 
 typedef struct LVar LVar;
