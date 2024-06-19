@@ -339,6 +339,7 @@ Token *tokenize(char *p)
         || *p == ';'
         || *p == '{'
         || *p == '}'
+        || *p == ','
         )
         {
             cur = new_token(TK_RESERVED, cur, p++);
@@ -551,6 +552,7 @@ Node *primary()
             while(!consume(")")){
                 cur->next = expr();
                 cur = cur->next;                
+                consume(",");
             }
             node->args = head.next;
             return node;

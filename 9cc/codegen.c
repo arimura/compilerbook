@@ -100,11 +100,14 @@ void gen(Node *node)
         return;
     case ND_FUNCALL:
         Node *a = node->args;
-        // while(a && i < 6){
-        //     gen(a);
-
-        // }
-
+        int i = 0;
+        const char *r[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+        while(a && i < 6){
+            gen(a);
+            printf("    pop %s\n", r[i]);
+            a = a->next;
+            i++;
+        }
 
         char *name = malloc((node->funcname_len + 1) * sizeof(char));
         strncpy(name, node->funcname, node->funcname_len);
