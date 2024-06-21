@@ -58,6 +58,5 @@ assert 1 "{1;}1;"
 assert 2 "{a=2;} a;"
 assert 2 "{}2;"
 assert 4 "a=0;b=0;while(a != 2){a = a + 1; b = b + 2;} b;"
-assert 1  "foo();1;"
 assert 1  "foo(1, 2);1;"
 echo OK

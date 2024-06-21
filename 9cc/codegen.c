@@ -108,6 +108,8 @@ void gen(Node *node)
             a = a->next;
             i++;
         }
+        //TODO: System V ABIに合わせるために、ここでrspを16の倍数にする。
+        //ただし引数でregiserだけを使っている（=stackを使わない）なら常にrspは16の倍数になっている？
 
         char *name = malloc((node->funcname_len + 1) * sizeof(char));
         strncpy(name, node->funcname, node->funcname_len);
