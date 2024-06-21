@@ -1,3 +1,3 @@
 #include <stdio.h>
 
-int foo() { printf("foo called\n"); }
+int foo(int x, int y) { printf("foo: %d\n", x + y); }
