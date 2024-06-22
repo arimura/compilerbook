@@ -442,10 +442,27 @@ Node *stmt(){
     return node;
 }
 
+Node *declare(){
+    Node *node = calloc(1, sizeof(Node));
+    //関数宣言
+    Token *t = consume_ident();
+    if(t){
+        expect('(');
+        node->kind = ND_FUNC;
+
+
+
+    }else{
+       error("トップレベルでは宣言が必要です"); 
+    }
+    //今は関数外のstatementも許可
+    return stmt();
+}
+
 void program(){
     int i = 0;
     while(!at_eof()){
-        code[i++] = stmt();
+        code[i++] = declare();
     }
     code[i] = NULL;
 }

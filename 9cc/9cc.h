@@ -45,6 +45,7 @@ typedef enum
     ND_FOR,
     ND_BLOCK,
     ND_FUNCALL,
+    ND_FUNC,
 } NodeKind;
 
 typedef struct Node Node;
@@ -64,11 +65,11 @@ struct Node
     Node *init;
     Node *inc;
 
-    //block body and statements
+    //For block body, statements and func body
     Node *body;
     Node *next;
 
-    //To be refactored?
+    //For func call and func declaretion
     char *funcname;
     int funcname_len;
     Node *args;
