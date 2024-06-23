@@ -46,6 +46,7 @@ typedef enum
     ND_BLOCK,
     ND_FUNCALL,
     ND_FUNC,
+    ND_FUNC_ARG,
 } NodeKind;
 
 typedef struct Node Node;
@@ -72,7 +73,9 @@ struct Node
     //For func call and func declaretion
     char *funcname;
     int funcname_len;
+    char *argname;
     Node *args;
+    int argname_len;
 };
 
 typedef struct LVar LVar;

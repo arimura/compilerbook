@@ -449,9 +449,21 @@ Node *declare(){
     if(t){
         expect('(');
         node->kind = ND_FUNC;
+        node->funcname = t->str;
+        node->funcname_len = t->len;
+        Node head = {};
+        Node *cur = &head;
 
-
-
+        while(!consume(")")){
+            Node *arg = calloc(1, sizeof(Node));
+            arg->kind = ND_FUNC_ARG;
+            arg->argname = token->str;
+            arg->argname_len = token->len;
+            cur->next = arg;
+            consume(",");
+        }
+        node->args = head.next;
+        return node;
     }else{
        error("トップレベルでは宣言が必要です"); 
     }
