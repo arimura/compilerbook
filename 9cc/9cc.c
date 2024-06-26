@@ -30,6 +30,19 @@ LVar *find_lvar(Token *tok) {
     return NULL;
 }
 
+Scope *scope = &(Scope){}; 
+
+void enter_scope(){
+    Scope *s = calloc(1, sizeof(Scope));
+    s->next = scope;
+    s->locals = calloc(1, sizeof(LVar));
+    scope = s;
+}
+
+void leave_scope(){
+    scope = scope->next;
+}
+
 Node *code[100];
 
 /*
