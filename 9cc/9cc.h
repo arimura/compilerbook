@@ -86,5 +86,13 @@ struct LVar {
     int offset;
 };
 
+typedef struct Scope Scope;
+struct Scope {
+    Scope *next;
+    LVar *locals;
+};
+
+void enter_scope();
+void leave_scope();
 
 void error(char *fmt, ...);
