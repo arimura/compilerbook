@@ -480,6 +480,7 @@ Node *declare(){
             consume(",");
         }
         node->args = head.next;
+        node->body = stmt();
         leave_scope();
         return node;
     }else{
@@ -640,7 +641,7 @@ int main(int argc, char **argv)
 
     user_input = argv[1];
     token = tokenize(user_input);
-    // printToken(token);
+    printToken(token);
     program();
     // printLocals();
     // printCode();
