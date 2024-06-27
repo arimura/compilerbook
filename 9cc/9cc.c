@@ -21,16 +21,19 @@ void error(char *fmt, ...)
     exit(1);
 }
 
+//To be removed?
 LVar *locals;
 
+Scope *scope = &(Scope){}; 
 LVar *find_lvar(Token *tok) {
-    for (LVar *var = locals; var; var = var->next)
+
+    for (Scope *s = scope; s; s = s->next){
+          for (LVar *var = s->locals; var; var = var->next)
         if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
             return var;
+    }
     return NULL;
 }
-
-Scope *scope = &(Scope){}; 
 
 void enter_scope(){
     Scope *s = calloc(1, sizeof(Scope));
@@ -460,6 +463,7 @@ Node *declare(){
     //関数宣言
     Token *t = consume_ident();
     if(t){
+        enter_scope();
         expect('(');
         node->kind = ND_FUNC;
         node->funcname = t->str;
@@ -476,6 +480,7 @@ Node *declare(){
             consume(",");
         }
         node->args = head.next;
+        leave_scope();
         return node;
     }else{
        error("トップレベルでは宣言が必要です"); 
