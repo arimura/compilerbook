@@ -638,6 +638,7 @@ int main(int argc, char **argv)
         error("引数の個数が正しくありません");
         return 1;
     }
+    //no buffering
     // setvbuf(stdout, NULL, _IONBF, 0);
 
     user_input = argv[1];
