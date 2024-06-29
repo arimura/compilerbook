@@ -117,19 +117,17 @@ void gen(Node *node)
         printf("    call %s\n", "foo");
         return;
     case ND_FUNC:
-        //prologue
-        printf("    push rbp\n");
-        printf("    mov rbp, rsp\n");
-        printf("    sub rsp, 208\n");
-
         char *f = malloc((node->funcname_len + 1) * sizeof(char));
         strncpy(f, node->funcname, node->funcname_len);
         f[node->funcname_len] = '\0';
         
         printf("%s:\n", f);
+        //prologue
+        printf("    push rbp\n");
+        printf("    mov rbp, rsp\n");
+        printf("    sub rsp, 208\n");
 
-        //不要？元々main関数内にあったこの命令をどこに置くか考える
-        printf("    pop rax\n");
+        gen(node->body);
 
         //epilogue
         printf("    mov rsp, rbp\n");
