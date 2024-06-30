@@ -7,9 +7,11 @@ void gen_lval(Node *node){
     if(node->kind != ND_LVAR)
         error("代入の左辺値が変数ではありません");
 
+    printf("# gen_lval\n");
     printf("    mov rax, rbp\n");
     printf("    sub rax, %d\n", node->offset);
     printf("    push rax\n");
+    printf("# gen_lval end\n");
 }
 
 static int count(void) {
@@ -32,10 +34,12 @@ void gen(Node *node)
         gen_lval(node->lhs);
         gen(node->rhs);
 
+        printf("# assign\n");
         printf("    pop rdi\n");
         printf("    pop rax\n");
         printf("    mov [rax], rdi\n");
         printf("    push rdi\n");
+        printf("# assign end\n");
         return;
     case ND_RETURN:
         gen(node->lhs);
@@ -122,17 +126,19 @@ void gen(Node *node)
         f[node->funcname_len] = '\0';
         
         printf("%s:\n", f);
-        //prologue
+        printf("# prologue\n");
         printf("    push rbp\n");
         printf("    mov rbp, rsp\n");
         printf("    sub rsp, 208\n");
+        printf("# prologue end\n");
 
         gen(node->body);
 
-        //epilogue
+        printf("# epilogue\n");
         printf("    mov rsp, rbp\n");
         printf("    pop rbp\n");
         printf("    ret\n");        
+        printf("# epilogue end\n");
 
         return;
     }
