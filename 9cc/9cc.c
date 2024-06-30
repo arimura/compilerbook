@@ -649,7 +649,7 @@ Node *primary()
         else
         {
             lvar = calloc(1, sizeof(LVar));
-            lvar->next = locals;
+            lvar->next = scope->locals;
             lvar->name = tok->str;
             lvar->len = tok->len;
             // To be refactored?
@@ -662,7 +662,7 @@ Node *primary()
                 lvar->offset = 8;
             }
             node->offset = lvar->offset;
-            locals = lvar;
+            scope->locals = lvar;
         }
         return node;
     }
