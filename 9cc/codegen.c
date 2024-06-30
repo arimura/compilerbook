@@ -119,6 +119,7 @@ void gen(Node *node)
         strncpy(name, node->funcname, node->funcname_len);
         name[node->funcname_len] = '\0';
         printf("    call %s\n", name);
+        printf("    push rax\n");
         return;
     case ND_FUNC:
         char *f = malloc((node->funcname_len + 1) * sizeof(char));
