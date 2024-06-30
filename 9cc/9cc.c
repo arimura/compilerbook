@@ -21,9 +21,6 @@ void error(char *fmt, ...)
     exit(1);
 }
 
-// To be removed?
-LVar *locals;
-
 Scope *scope = &(Scope){};
 LVar *find_lvar(Token *tok)
 {
@@ -161,14 +158,6 @@ void printNode(const Node *node, int depth)
         fprintf(stderr, "%s\n", getNodeKindName(node->kind));
         printNode(node->lhs, depth + 1);
         printNode(node->rhs, depth + 1);
-    }
-}
-
-void printLocals()
-{
-    for (LVar *var = locals; var; var = var->next)
-    {
-        fprintf(stderr, "name: %s, offset: %d\n", var->name, var->offset);
     }
 }
 
@@ -652,10 +641,9 @@ Node *primary()
             lvar->next = scope->locals;
             lvar->name = tok->str;
             lvar->len = tok->len;
-            // To be refactored?
-            if (locals)
+            if (scope->locals)
             {
-                lvar->offset = locals->offset + 8;
+                lvar->offset = scope->locals->offset + 8;
             }
             else
             {
@@ -684,7 +672,6 @@ int main(int argc, char **argv)
     token = tokenize(user_input);
     // printToken(token);
     program();
-    // printLocals();
     // printCode();
 
     printf(".intel_syntax noprefix\n");
