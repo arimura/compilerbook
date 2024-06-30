@@ -132,6 +132,17 @@ void gen(Node *node)
         printf("    sub rsp, 208\n");
         printf("# prologue end\n");
 
+        Node *fa = node->args;
+        const char *fr[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+        int fi = 0;
+        while(fa && fi < 6){
+            gen_lval(fa);
+            printf("    pop rax\n");
+            printf("    mov [rax] %s\n", fr[fi]);
+            fa = fa->next;
+            fi++;
+        }
+
         gen(node->body);
 
         printf("# epilogue\n");
