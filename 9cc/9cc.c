@@ -483,15 +483,17 @@ Node *declare()
         Node head = {};
         Node *cur = &head;
 
-        while (!consume(")"))
+        Token *ta;
+        while (ta = consume_ident())
         {
             Node *arg = calloc(1, sizeof(Node));
-            arg->kind = ND_FUNC_ARG;
-            arg->argname = token->str;
-            arg->argname_len = token->len;
+            arg->kind = ND_LVAR;
+            arg->argname = ta->str;
+            arg->argname_len = ta->len;
             cur->next = arg;
             consume(",");
         }
+        expect(')');
         node->args = head.next;
         node->body = stmt();
         leave_scope();

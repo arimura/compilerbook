@@ -139,7 +139,7 @@ void gen(Node *node)
         while(fa && fi < 6){
             gen_lval(fa);
             printf("    pop rax\n");
-            printf("    mov [rax] %s\n", fr[fi]);
+            printf("    mov [rax], %s\n", fr[fi]);
             fa = fa->next;
             fi++;
         }
