@@ -21,36 +21,40 @@ void error(char *fmt, ...)
     exit(1);
 }
 
-//To be removed?
+// To be removed?
 LVar *locals;
 
-Scope *scope = &(Scope){}; 
-LVar *find_lvar(Token *tok) {
+Scope *scope = &(Scope){};
+LVar *find_lvar(Token *tok)
+{
 
-    for (Scope *s = scope; s; s = s->next){
-          for (LVar *var = s->locals; var; var = var->next)
-        if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
-            return var;
+    for (Scope *s = scope; s; s = s->next)
+    {
+        for (LVar *var = s->locals; var; var = var->next)
+            if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
+                return var;
     }
     return NULL;
 }
 
-void enter_scope(){
+void enter_scope()
+{
     Scope *s = calloc(1, sizeof(Scope));
     s->next = scope;
     s->locals = calloc(1, sizeof(LVar));
     scope = s;
 }
 
-void leave_scope(){
+void leave_scope()
+{
     scope = scope->next;
 }
 
 Node *code[100];
 
 /*
-* Print Util
-*/
+ * Print Util
+ */
 const char *getTokenKindName(TokenKind kind)
 {
     switch (kind)
@@ -125,7 +129,7 @@ const char *getNodeKindName(NodeKind kind)
     case ND_IF:
         return "If";
     case ND_ELSE:
-        return "Else"; 
+        return "Else";
     case ND_WHILE:
         return "While";
     case ND_FOR:
@@ -160,21 +164,25 @@ void printNode(const Node *node, int depth)
     }
 }
 
-void printLocals(){
-    for(LVar *var = locals; var; var = var->next){
+void printLocals()
+{
+    for (LVar *var = locals; var; var = var->next)
+    {
         fprintf(stderr, "name: %s, offset: %d\n", var->name, var->offset);
     }
 }
 
-void printCode(){
-    for(int i = 0; code[i]; i++){
+void printCode()
+{
+    for (int i = 0; code[i]; i++)
+    {
         printNode(code[i], 0);
     }
 }
 
 /*
-* Tokenizer
-*/
+ * Tokenizer
+ */
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
     Node *node = calloc(1, sizeof(Node));
@@ -202,7 +210,8 @@ bool consume(char *op)
     return true;
 }
 
-Token *consume_ident(){
+Token *consume_ident()
+{
     if (token->kind != TK_INDENT)
         return NULL;
     Token *t = token;
@@ -210,8 +219,10 @@ Token *consume_ident(){
     return t;
 }
 
-bool consume_kind(TokenKind kind){
-    if(token->kind != kind){
+bool consume_kind(TokenKind kind)
+{
+    if (token->kind != kind)
+    {
         return false;
     }
     token = token->next;
@@ -248,24 +259,28 @@ Token *new_token(TokenKind kind, Token *cur, char *str)
     return tok;
 }
 
-bool startswith(char *p, char *q) {
-  return memcmp(p, q, strlen(q)) == 0;
+bool startswith(char *p, char *q)
+{
+    return memcmp(p, q, strlen(q)) == 0;
 }
 
-int is_alnum(char c) {
+int is_alnum(char c)
+{
     return ('a' <= c && c <= 'z') ||
            ('A' <= c && c <= 'Z') ||
            ('0' <= c && c <= '9') ||
            (c == '_');
 }
 
-bool is_ident1(char c){
+bool is_ident1(char c)
+{
     return ('a' <= c && c <= 'z') ||
            ('A' <= c && c <= 'Z') ||
            (c == '_');
 }
 
-bool is_ident2(char c) {
+bool is_ident2(char c)
+{
     return ('a' <= c && c <= 'z') ||
            ('A' <= c && c <= 'Z') ||
            ('0' <= c && c <= '9') ||
@@ -286,77 +301,68 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if (strncmp(p, "return", 6) == 0 && !is_alnum(p[6])){
-           cur = new_token(TK_RETURN, cur, p);
-           cur->len = 6;
-           p = p + 6;
-           continue; 
+        if (strncmp(p, "return", 6) == 0 && !is_alnum(p[6]))
+        {
+            cur = new_token(TK_RETURN, cur, p);
+            cur->len = 6;
+            p = p + 6;
+            continue;
         }
 
-        if (strncmp(p, "if", 2) == 0 && !is_alnum(p[2])){
+        if (strncmp(p, "if", 2) == 0 && !is_alnum(p[2]))
+        {
             cur = new_token(TK_IF, cur, p);
             cur->len = 2;
             p = p + 2;
             continue;
         }
 
-        if (strncmp(p, "else", 4) == 0 && !is_alnum(p[4])){
+        if (strncmp(p, "else", 4) == 0 && !is_alnum(p[4]))
+        {
             cur = new_token(TK_ELSE, cur, p);
             cur->len = 4;
             p = p + 4;
             continue;
         }
 
-        if (strncmp(p, "while", 5) == 0 && !is_alnum(p[5])){
+        if (strncmp(p, "while", 5) == 0 && !is_alnum(p[5]))
+        {
             cur = new_token(TK_WHILE, cur, p);
             cur->len = 5;
             p = p + 5;
             continue;
         }
 
-        if(strncmp(p, "for", 3) == 0 && !is_alnum(p[3])){
+        if (strncmp(p, "for", 3) == 0 && !is_alnum(p[3]))
+        {
             cur = new_token(TK_FOR, cur, p);
             cur->len = 3;
             p = p + 3;
             continue;
         }
 
-        if (is_ident1(*p)){
+        if (is_ident1(*p))
+        {
             char *cnt = p;
-            do {
+            do
+            {
                 cnt++;
             } while (is_ident2(*cnt));
             cur = new_token(TK_INDENT, cur, p);
             cur->len = cnt - p;
-            p = cnt; 
+            p = cnt;
             continue;
         }
 
-        if (startswith(p, "<=") 
-        || startswith(p, ">=") 
-        || startswith(p, "==")
-        || startswith(p, "!=")) 
+        if (startswith(p, "<=") || startswith(p, ">=") || startswith(p, "==") || startswith(p, "!="))
         {
             cur = new_token(TK_RESERVED, cur, p);
             cur->len = 2;
-            p = p+2;
+            p = p + 2;
             continue;
         }
 
-        if (*p == '+' 
-        || *p == '-'
-        || *p == '*' 
-        || *p == '/' 
-        || *p == ')' 
-        || *p == '(' 
-        || *p == '>' 
-        || *p == '<'
-        || *p == '='
-        || *p == ';'
-        || *p == '{'
-        || *p == '}'
-        || *p == ','
-        )
+        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == ')' || *p == '(' || *p == '>' || *p == '<' || *p == '=' || *p == ';' || *p == '{' || *p == '}' || *p == ',')
         {
             cur = new_token(TK_RESERVED, cur, p++);
             cur->len = 1;
@@ -378,10 +384,9 @@ Token *tokenize(char *p)
     return head.next;
 }
 
-
 /*
-* Parser
-*/
+ * Parser
+ */
 Node *expr();
 Node *add();
 Node *mul();
@@ -391,78 +396,96 @@ Node *relational();
 Node *equality();
 Node *assign();
 
-
 Node *expr()
 {
     return assign();
 }
 
-Node *stmt(){
+Node *stmt()
+{
     Node *node;
-    
-    if(consume_kind(TK_IF)){
+
+    if (consume_kind(TK_IF))
+    {
         node = calloc(1, sizeof(Node));
         node->kind = ND_IF;
         expect('(');
         node->cond = expr();
         expect(')');
         node->then = stmt();
-        if(consume_kind(TK_ELSE)){
+        if (consume_kind(TK_ELSE))
+        {
             node->els = stmt();
         }
-    }else if(consume_kind(TK_WHILE)){
+    }
+    else if (consume_kind(TK_WHILE))
+    {
         node = calloc(1, sizeof(Node));
         node->kind = ND_WHILE;
         expect('(');
         node->cond = expr();
         expect(')');
         node->then = stmt();
-    }else if(consume_kind(TK_FOR)){
+    }
+    else if (consume_kind(TK_FOR))
+    {
         node = calloc(1, sizeof(Node));
         node->kind = ND_FOR;
         expect('(');
-        if(!consume(";")){
+        if (!consume(";"))
+        {
             node->init = expr();
             expect(';');
         }
-        if(!consume(";")){
+        if (!consume(";"))
+        {
             node->cond = expr();
             expect(';');
         }
-        if(!consume(")")){
+        if (!consume(")"))
+        {
             node->inc = expr();
             expect(')');
         }
         node->then = stmt();
-    }else if(consume_kind(TK_RETURN)){
+    }
+    else if (consume_kind(TK_RETURN))
+    {
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
         node->lhs = expr();
         expect(';');
-    }else if(consume("{")){
+    }
+    else if (consume("{"))
+    {
         node = calloc(1, sizeof(Node));
         node->kind = ND_BLOCK;
         Node head = {};
         Node *cur = &head;
 
-        while(!consume("}")){
+        while (!consume("}"))
+        {
             cur->next = stmt();
             cur = cur->next;
         }
         node->body = head.next;
-    }else{
+    }
+    else
+    {
         node = expr();
         expect(';');
-    } 
-    
+    }
+
     return node;
 }
 
-Node *declare(){
+Node *declare()
+{
     Node *node = calloc(1, sizeof(Node));
-    //関数宣言
+    // 関数宣言
     Token *t = consume_ident();
-    if(t){
+    if (t)
+    {
         enter_scope();
         expect('(');
         node->kind = ND_FUNC;
@@ -471,7 +494,8 @@ Node *declare(){
         Node head = {};
         Node *cur = &head;
 
-        while(!consume(")")){
+        while (!consume(")"))
+        {
             Node *arg = calloc(1, sizeof(Node));
             arg->kind = ND_FUNC_ARG;
             arg->argname = token->str;
@@ -483,39 +507,46 @@ Node *declare(){
         node->body = stmt();
         leave_scope();
         return node;
-    }else{
-       error("トップレベルでは宣言が必要です"); 
     }
-    //今は関数外のstatementも許可
+    else
+    {
+        error("トップレベルでは宣言が必要です");
+    }
+    // 今は関数外のstatementも許可
     return stmt();
 }
 
-void program(){
+void program()
+{
     int i = 0;
-    while(!at_eof()){
+    while (!at_eof())
+    {
         code[i++] = declare();
     }
     code[i] = NULL;
 }
 
-Node *assign(){
+Node *assign()
+{
     Node *node = equality();
-    if(consume("="))
+    if (consume("="))
         node = new_node(ND_ASSIGN, node, assign());
     return node;
 }
 
-Node *equality(){
+Node *equality()
+{
     Node *node = relational();
 
-    for (;;){
-        if(consume("=="))
+    for (;;)
+    {
+        if (consume("=="))
             node = new_node(ND_EQ, node, relational());
-        else if(consume("!="))
+        else if (consume("!="))
             node = new_node(ND_NE, node, relational());
         else
             return node;
-    } 
+    }
 }
 
 Node *relational()
@@ -576,7 +607,6 @@ Node *unary()
     return primary();
 }
 
-
 Node *primary()
 {
     if (consume("("))
@@ -587,19 +617,22 @@ Node *primary()
     }
 
     Token *tok = consume_ident();
-    if(tok){
+    if (tok)
+    {
         Node *node = calloc(1, sizeof(Node));
 
-        if (consume("(")){
+        if (consume("("))
+        {
             node->kind = ND_FUNCALL;
             node->funcname = tok->str;
             node->funcname_len = tok->len;
             Node head = {};
-            Node *cur = &head;    
+            Node *cur = &head;
 
-            while(!consume(")")){
+            while (!consume(")"))
+            {
                 cur->next = expr();
-                cur = cur->next;                
+                cur = cur->next;
                 consume(",");
             }
             node->args = head.next;
@@ -609,17 +642,23 @@ Node *primary()
         node->kind = ND_LVAR;
 
         LVar *lvar = find_lvar(tok);
-        if(lvar) {
+        if (lvar)
+        {
             node->offset = lvar->offset;
-        }else{
+        }
+        else
+        {
             lvar = calloc(1, sizeof(LVar));
             lvar->next = locals;
             lvar->name = tok->str;
             lvar->len = tok->len;
-            //To be refactored?
-            if(locals){
+            // To be refactored?
+            if (locals)
+            {
                 lvar->offset = locals->offset + 8;
-            }else{
+            }
+            else
+            {
                 lvar->offset = 8;
             }
             node->offset = lvar->offset;
@@ -638,8 +677,8 @@ int main(int argc, char **argv)
         error("引数の個数が正しくありません");
         return 1;
     }
-    //no buffering
-    // setvbuf(stdout, NULL, _IONBF, 0);
+    // no buffering
+    //  setvbuf(stdout, NULL, _IONBF, 0);
 
     user_input = argv[1];
     token = tokenize(user_input);
@@ -651,7 +690,8 @@ int main(int argc, char **argv)
     printf(".intel_syntax noprefix\n");
     printf(".globl main\n");
 
-    for(int i = 0; code[i]; i++){
+    for (int i = 0; code[i]; i++)
+    {
         gen(code[i]);
     }
 
