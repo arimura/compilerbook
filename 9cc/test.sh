@@ -61,6 +61,6 @@ assert 4 "main(){a=0;b=0;while(a != 2){a = a + 1; b = b + 2;} return b;}"
 assert 1 "main(){foo(1, 2);return 1;}"
 assert 1 "hoge(){1;} main(){return 1;}"
 assert 2 "hoge(){return 2;} main(){return hoge();}"
-assert 2 "hoge(x){return x;} main(){return 2;}"
+assert 2 "hoge(x){return x;} main(){return hoge(2);}"
 # assert 5 "hoge(x, y){return x + y;} main(){return hoge(2, 3);}"
 echo OK

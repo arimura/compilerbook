@@ -486,11 +486,16 @@ Node *declare()
         Token *ta;
         while (ta = consume_ident())
         {
+            //TO be fixed
+            //handle func args as same as lvar
             Node *arg = calloc(1, sizeof(Node));
             arg->kind = ND_LVAR;
             arg->argname = ta->str;
             arg->argname_len = ta->len;
             cur->next = arg;
+
+            // arg->next = scope->locals;
+            // scope->locals = arg;
             consume(",");
         }
         expect(')');
