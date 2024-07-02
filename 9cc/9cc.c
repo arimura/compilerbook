@@ -468,6 +468,40 @@ Node *stmt()
     return node;
 }
 
+Node *lvar(Token *tok)
+{
+    if (tok->kind != TK_INDENT)
+    {
+        return NULL;
+    }
+
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_LVAR;
+    LVar *lvar = find_lvar(tok);
+    if (lvar)
+    {
+        node->offset = lvar->offset;
+    }
+    else
+    {
+        lvar = calloc(1, sizeof(LVar));
+        lvar->next = scope->locals;
+        lvar->name = tok->str;
+        lvar->len = tok->len;
+        if (scope->locals)
+        {
+            lvar->offset = scope->locals->offset + 8;
+        }
+        else
+        {
+            lvar->offset = 8;
+        }
+        node->offset = lvar->offset;
+        scope->locals = lvar;
+    }
+    return node;
+}
+
 Node *declare()
 {
     Node *node = calloc(1, sizeof(Node));
@@ -486,16 +520,9 @@ Node *declare()
         Token *ta;
         while (ta = consume_ident())
         {
-            //TO be fixed
-            //handle func args as same as lvar
-            Node *arg = calloc(1, sizeof(Node));
-            arg->kind = ND_LVAR;
-            arg->argname = ta->str;
-            arg->argname_len = ta->len;
-            cur->next = arg;
-
-            // arg->next = scope->locals;
-            // scope->locals = arg;
+            Node *n = lvar(ta);
+            cur->next = n;
+            cur = n;
             consume(",");
         }
         expect(')');
