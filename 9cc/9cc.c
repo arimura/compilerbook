@@ -642,10 +642,10 @@ Node *primary()
     Token *tok = consume_ident();
     if (tok)
     {
-        Node *node = calloc(1, sizeof(Node));
 
         if (consume("("))
         {
+            Node *node = calloc(1, sizeof(Node));
             node->kind = ND_FUNCALL;
             node->funcname = tok->str;
             node->funcname_len = tok->len;
@@ -662,31 +662,7 @@ Node *primary()
             return node;
         }
 
-        node->kind = ND_LVAR;
-
-        LVar *lvar = find_lvar(tok);
-        if (lvar)
-        {
-            node->offset = lvar->offset;
-        }
-        else
-        {
-            lvar = calloc(1, sizeof(LVar));
-            lvar->next = scope->locals;
-            lvar->name = tok->str;
-            lvar->len = tok->len;
-            if (scope->locals)
-            {
-                lvar->offset = scope->locals->offset + 8;
-            }
-            else
-            {
-                lvar->offset = 8;
-            }
-            node->offset = lvar->offset;
-            scope->locals = lvar;
-        }
-        return node;
+        return lvar(tok);
     }
 
     return new_node_num(expect_number());
