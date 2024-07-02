@@ -62,5 +62,5 @@ assert 1 "main(){foo(1, 2);return 1;}"
 assert 1 "hoge(){1;} main(){return 1;}"
 assert 2 "hoge(){return 2;} main(){return hoge();}"
 assert 2 "hoge(x){return x;} main(){return hoge(2);}"
-# assert 5 "hoge(x, y){return x + y;} main(){return hoge(2, 3);}"
+assert 5 "hoge(x, y){return x + y;} main(){return hoge(2, 3);}"
 echo OK
