@@ -64,5 +64,5 @@ assert 2 "hoge(){return 2;} main(){return hoge();}"
 assert 2 "hoge(x){return x;} main(){return hoge(2);}"
 assert 5 "hoge(x, y){return x + y;} main(){return hoge(2, 3);}"
 assert 1 "main(){qc_print(10);return 1;}"
-# assert  "fib(x, y){return x + y;} "
+assert 1 "fib(p, n, i){if(i == 0){return 1;} qc_print(n); fib(n, p + n, i -1);} main(){fib(1,1,3);}"
 echo OK
