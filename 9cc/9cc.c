@@ -22,15 +22,22 @@ void error(char *fmt, ...)
 }
 
 Scope *scope = &(Scope){};
+LVar *current_lvar;
+void init_lvar()
+{
+    current_lvar = &(LVar){};
+}
+
+void destroy_lvar()
+{
+    current_lvar = NULL;
+}
+
 LVar *find_lvar(Token *tok)
 {
-
-    for (Scope *s = scope; s; s = s->next)
-    {
-        for (LVar *var = s->locals; var; var = var->next)
-            if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
-                return var;
-    }
+    for (LVar *var = current_lvar; var; var = var->next)
+        if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
+            return var;
     return NULL;
 }
 
@@ -485,19 +492,12 @@ Node *lvar(Token *tok)
     else
     {
         lvar = calloc(1, sizeof(LVar));
-        lvar->next = scope->locals;
+        lvar->next = current_lvar;
         lvar->name = tok->str;
         lvar->len = tok->len;
-        if (scope->locals)
-        {
-            lvar->offset = scope->locals->offset + 8;
-        }
-        else
-        {
-            lvar->offset = 8;
-        }
+        lvar->offset = current_lvar->offset + 8;
         node->offset = lvar->offset;
-        scope->locals = lvar;
+        current_lvar = lvar;
     }
     return node;
 }
@@ -510,6 +510,7 @@ Node *declare()
     if (t)
     {
         enter_scope();
+        init_lvar();
         expect('(');
         node->kind = ND_FUNC;
         node->funcname = t->str;
@@ -528,6 +529,7 @@ Node *declare()
         expect(')');
         node->args = head.next;
         node->body = stmt();
+        destroy_lvar();
         leave_scope();
         return node;
     }
