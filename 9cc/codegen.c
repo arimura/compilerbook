@@ -139,6 +139,7 @@ void gen(Node *node)
         while(fa && fi < 6){
             gen_lval(fa);
             printf("    pop rax\n");
+            //TODO: 汎用レジスターは上書きされるので、引数の値はstackに詰めて直前でregisterに展開
             printf("    mov [rax], %s\n", fr[fi]);
             fa = fa->next;
             fi++;
