@@ -25,7 +25,7 @@ Scope *scope = &(Scope){};
 LVar *current_lvar;
 void init_lvar()
 {
-    current_lvar = &(LVar){};
+    current_lvar = NULL;
 }
 
 void destroy_lvar()
@@ -495,7 +495,7 @@ Node *lvar(Token *tok)
         lvar->next = current_lvar;
         lvar->name = tok->str;
         lvar->len = tok->len;
-        lvar->offset = current_lvar->offset + 8;
+        lvar->offset = current_lvar ? current_lvar->offset + 8 : 8;
         node->offset = lvar->offset;
         current_lvar = lvar;
     }
