@@ -104,16 +104,22 @@ void gen(Node *node)
         return;
     case ND_FUNCALL:
         Node *a = node->args;
-        int i = 0;
-        const char *r[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
-        while(a && i < 6){
+        //push args
+        int ac = 0;
+        while(a && ac < 6){
             gen(a);
-            printf("    pop %s\n", r[i]);
             a = a->next;
+            ac++;
+        }
+
+        int i = 0;
+        //System V ABIでは6つのregister以上の引数を利用する場合はrspを16の倍数にする必要がある。
+        //今はregisterのみ利用
+        const char *r[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+        while(i < ac){
+            printf("    pop %s\n", r[ac - i - 1]);
             i++;
         }
-        //TODO: System V ABIに合わせるために、ここでrspを16の倍数にする。
-        //ただし引数でregiserだけを使っている（=stackを使わない）なら常にrspは16の倍数になっている？
 
         char *name = malloc((node->funcname_len + 1) * sizeof(char));
         strncpy(name, node->funcname, node->funcname_len);
@@ -139,7 +145,6 @@ void gen(Node *node)
         while(fa && fi < 6){
             gen_lval(fa);
             printf("    pop rax\n");
-            //TODO: 汎用レジスターは上書きされるので、引数の値はstackに詰めて直前でregisterに展開
             printf("    mov [rax], %s\n", fr[fi]);
             fa = fa->next;
             fi++;
