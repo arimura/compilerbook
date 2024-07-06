@@ -15,6 +15,10 @@ $(OBJS): 9cc.h
 test: 9cc
 	./test.sh
 
+debug-assembly:
+	gcc -g -o tmp-debug tmp.s foo.o
+	gdb tmp-debug
+
 clean:
 	rm -f 9cc *.0 *~ tmp* foo.o
 
