@@ -358,7 +358,7 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == ')' || *p == '(' || *p == '>' || *p == '<' || *p == '=' || *p == ';' || *p == '{' || *p == '}' || *p == ',')
+        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == ')' || *p == '(' || *p == '>' || *p == '<' || *p == '=' || *p == ';' || *p == '{' || *p == '}' || *p == ',' || *p == '&')
         {
             cur = new_token(TK_RESERVED, cur, p++);
             cur->len = 1;
@@ -639,6 +639,22 @@ Node *primary()
         Node *node = expr();
         expect(')');
         return node;
+    }
+
+    if(consume("&"))
+    {
+        Node *n = calloc(1, sizeof(Node));
+        n->kind = ND_ADDR;
+        n->lhs = unary();
+        return n;
+    }
+
+    if(consume("*"))
+    {
+        Node *n = calloc(1, sizeof(Node));
+        n->kind = ND_DEREF;
+        n->lhs= unary();
+        return n;
     }
 
     Token *tok = consume_ident();

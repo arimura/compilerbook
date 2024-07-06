@@ -68,4 +68,5 @@ assert 1 "fib(i,s){ if(i == 0){return 1;}  return fib(i-1,0);} main(){return fib
 assert 0 "rec(x){if(x == 0){return x;} return rec(x-1);} main(){return rec(5);}"
 assert 0 "rec(x,y){if(x == 0){return x;} return rec(x - 1, y * 2);} main(){return rec(1, 2);}"
 assert 8 "fib(p, n, i){if(i == 0){return n;} return fib(n, p + n, i -1) ;} main(){return fib(1,1,4);}"
+assert 2 "main(){v = 2;p = &v; return *p;}"
 echo OK
