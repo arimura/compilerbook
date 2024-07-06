@@ -425,6 +425,7 @@ Node *declare_lvar(Token *tok)
         l->offset = current_lvar ? current_lvar->offset + 8 : 8;
         n->offset = l->offset;
         current_lvar = l;
+        return n;
     }
 }
 

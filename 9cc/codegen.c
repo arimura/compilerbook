@@ -20,6 +20,7 @@ static int count(void) {
 }
 void gen(Node *node)
 {
+    // fprintf(stderr, "gen: %d\n", node->kind);
     switch(node->kind){
     case ND_NUM:
         printf("    push %d\n", node->val);
