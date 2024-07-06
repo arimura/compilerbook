@@ -499,7 +499,9 @@ Node *stmt()
     }
     else if(consume_kind(TK_TYPE))
     {
-        node = declare_lvar(token);
+        Token *t = consume_ident();
+        node = declare_lvar(t);
+        expect(';');
     }
     else
     {
@@ -729,7 +731,7 @@ int main(int argc, char **argv)
         return 1;
     }
     // no buffering
-    //  setvbuf(stdout, NULL, _IONBF, 0);
+     setvbuf(stdout, NULL, _IONBF, 0);
 
     user_input = argv[1];
     token = tokenize(user_input);
