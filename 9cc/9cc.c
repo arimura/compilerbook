@@ -337,6 +337,14 @@ Token *tokenize(char *p)
             continue;
         }
 
+        if(strncmp(p, "int", 3) == 0 && !is_alnum(p[3]))
+        {
+            cur = new_token(TK_TYPE, cur, p);
+            cur->len = 3;
+            p = p + 3;
+            continue;
+        }
+
         if (is_ident1(*p))
         {
             char *cnt = p;
@@ -395,6 +403,29 @@ Node *assign();
 Node *expr()
 {
     return assign();
+}
+
+Node *declare_lvar(Token *tok)
+{
+    if (tok->kind != TK_INDENT)
+    {
+        error("Not indent token\n");
+    }
+
+    Node *n = calloc(1, sizeof(Node));
+    n->kind = ND_LVAR;
+    LVar *l = find_lvar(tok);
+    if (l){
+        error("lvar already declared\n");
+    }else{
+        l = calloc(1, sizeof(LVar));
+        l->next = current_lvar;
+        l->name = tok->str;
+        l->len = tok->len;
+        l->offset = current_lvar ? current_lvar->offset + 8 : 8;
+        n->offset = l->offset;
+        current_lvar = l;
+    }
 }
 
 Node *stmt()
@@ -465,6 +496,10 @@ Node *stmt()
             cur = cur->next;
         }
         node->body = head.next;
+    }
+    else if(consume_kind(TK_TYPE))
+    {
+        node = declare_lvar(token);
     }
     else
     {
