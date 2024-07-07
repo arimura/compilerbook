@@ -25,6 +25,12 @@ struct Token
     int len;
 };
 
+typedef struct Type Type;
+struct Type {
+    enum {INT, PTR} ty;
+    struct Type *ptr_to;
+};
+
 typedef enum
 {
     ND_ADD,
