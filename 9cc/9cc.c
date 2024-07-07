@@ -529,13 +529,7 @@ Node *lvar(Token *tok)
     }
     else
     {
-        lvar = calloc(1, sizeof(LVar));
-        lvar->next = current_lvar;
-        lvar->name = tok->str;
-        lvar->len = tok->len;
-        lvar->offset = current_lvar ? current_lvar->offset + 8 : 8;
-        node->offset = lvar->offset;
-        current_lvar = lvar;
+        error("変数が見つかりません");
     }
     return node;
 }
