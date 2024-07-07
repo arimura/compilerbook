@@ -538,6 +538,10 @@ Node *declare()
 {
     Node *node = calloc(1, sizeof(Node));
     // 関数宣言
+    if(!consume_kind(TK_TYPE)){
+        error("関数の戻り値の型がありません");
+    }
+
     Token *t = consume_ident();
     if (t)
     {
