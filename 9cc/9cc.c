@@ -553,7 +553,7 @@ Node *declare()
         Token *ta;
         while (ta = consume_ident())
         {
-            Node *n = lvar(ta);
+            Node *n = declare_lvar(ta);
             cur->next = n;
             cur = n;
             consume(",");
