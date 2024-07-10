@@ -215,6 +215,15 @@ Token *consume_ident()
     return t;
 }
 
+Token *consume_type()
+{
+    if (token->kind != TK_TYPE)
+        return NULL;
+    Token *t = token;
+    token = token->next;
+    return t;
+}
+
 bool consume_kind(TokenKind kind)
 {
     if (token->kind != kind)
@@ -501,16 +510,20 @@ Node *stmt()
         }
         node->body = head.next;
     }
-    else if (consume_kind(TK_TYPE))
-    {
-        Token *t = consume_ident();
-        node = declare_lvar(t);
-        expect(';');
-    }
     else
     {
-        node = expr();
-        expect(';');
+        Token *t = consume_type();
+        if (t)
+        {
+            Token *ti = consume_ident();
+            node = declare_lvar(ti);
+            expect(';');
+        }
+        else
+        {
+            node = expr();
+            expect(';');
+        }
     }
 
     return node;

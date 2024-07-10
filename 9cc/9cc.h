@@ -67,6 +67,7 @@ struct Node
     Node *rhs;
     int val;
     int offset;
+    Type type;
 
     //"if" or "for" statement
     Node *cond;
