@@ -337,7 +337,7 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if(strncmp(p, "int", 3) == 0 && !is_alnum(p[3]))
+        if (strncmp(p, "int", 3) == 0 && !is_alnum(p[3]))
         {
             cur = new_token(TK_TYPE, cur, p);
             cur->len = 3;
@@ -415,9 +415,12 @@ Node *declare_lvar(Token *tok)
     Node *n = calloc(1, sizeof(Node));
     n->kind = ND_LVAR;
     LVar *l = find_lvar(tok);
-    if (l){
+    if (l)
+    {
         error("lvar already declared\n");
-    }else{
+    }
+    else
+    {
         l = calloc(1, sizeof(LVar));
         l->next = current_lvar;
         l->name = tok->str;
@@ -498,7 +501,7 @@ Node *stmt()
         }
         node->body = head.next;
     }
-    else if(consume_kind(TK_TYPE))
+    else if (consume_kind(TK_TYPE))
     {
         Token *t = consume_ident();
         node = declare_lvar(t);
@@ -538,7 +541,8 @@ Node *declare()
 {
     Node *node = calloc(1, sizeof(Node));
     // 関数宣言
-    if(!consume_kind(TK_TYPE)){
+    if (!consume_kind(TK_TYPE))
+    {
         error("関数の戻り値の型がありません");
     }
 
@@ -677,7 +681,7 @@ Node *primary()
         return node;
     }
 
-    if(consume("&"))
+    if (consume("&"))
     {
         Node *n = calloc(1, sizeof(Node));
         n->kind = ND_ADDR;
@@ -685,11 +689,11 @@ Node *primary()
         return n;
     }
 
-    if(consume("*"))
+    if (consume("*"))
     {
         Node *n = calloc(1, sizeof(Node));
         n->kind = ND_DEREF;
-        n->lhs= unary();
+        n->lhs = unary();
         return n;
     }
 
@@ -730,7 +734,7 @@ int main(int argc, char **argv)
         return 1;
     }
     // no buffering
-     setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IONBF, 0);
 
     user_input = argv[1];
     token = tokenize(user_input);
