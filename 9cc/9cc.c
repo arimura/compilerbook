@@ -512,12 +512,32 @@ Node *stmt()
     }
     else
     {
+        // local var declaratoin or expression
         Token *t = consume_type();
-        if (t)
+        bool ptr = consume("*");
+        if (ptr || t)
         {
-            Token *ti = consume_ident();
-            node = declare_lvar(ti);
-            expect(';');
+            // consume all "*"
+            while (consume("*"))
+            {
+                ptr = true;
+            }
+            if (!t)
+            {
+                t = consume_type();
+            }
+            if (t)
+            {
+                node = declare_lvar(token);
+                Type *tp = calloc(1, sizeof(Type));
+                if(ptr){
+                    tp->ty = PTR;
+                }else{
+                    tp->ty = INT;
+                }
+                node->type = tp;
+                expect(';');
+            }
         }
         else
         {
