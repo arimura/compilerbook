@@ -441,6 +441,15 @@ Node *declare_lvar(Token *tok)
     }
 }
 
+bool is_lvar_decl()
+{
+    Token *org = token;
+    while( consume("*")){}
+    bool r = consume_kind(TK_TYPE);
+    token = org;
+    return r;
+}
+
 Node *stmt()
 {
     Node *node;
