@@ -108,3 +108,4 @@ void leave_scope();
 void error(char *fmt, ...);
 
 extern Token *token;
+extern Node *code[100];
