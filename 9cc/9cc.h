@@ -106,3 +106,5 @@ void enter_scope();
 void leave_scope();
 
 void error(char *fmt, ...);
+
+extern Token *token;
