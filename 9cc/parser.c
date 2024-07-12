@@ -60,7 +60,9 @@ bool consume_kind(TokenKind kind)
 void expect(char op)
 {
     if (token->kind != TK_RESERVED || token->str[0] != op)
-        error("'%c'ではありません", op);
+    {
+        error("'%c'ではありません。現在のトークンは%dです。", op, token->kind);
+    }
     token = token->next;
 }
 
@@ -242,31 +244,13 @@ Node *stmt()
     else
     {
         // local var declaratoin or expression
-        Token *t = consume_type();
-        bool ptr = consume("*");
-        if (ptr || t)
+        Type *t = lvar_type_declare();
+        if (t)
         {
-            // consume all "*"
-            while (consume("*"))
-            {
-                ptr = true;
-            }
-            if (!t)
-            {
-                t = consume_type();
-            }
-            if (t)
-            {
-                node = declare_lvar(token);
-                Type *tp = calloc(1, sizeof(Type));
-                if(ptr){
-                    tp->ty = PTR;
-                }else{
-                    tp->ty = INT;
-                }
-                node->type = tp;
-                expect(';');
-            }
+            Token *i = consume_ident();
+            node = declare_lvar(i);
+            node->type = t;
+            expect(';');
         }
         else
         {
