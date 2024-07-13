@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+//Generates the assembly code to push the address of a local variable onto the stack.
 void gen_lval(Node *node){
     if(node->kind != ND_LVAR)
         error("代入の左辺値が変数ではありません");
