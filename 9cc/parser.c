@@ -155,6 +155,13 @@ bool is_lvar_decl()
 
 Type *lvar_type_declare()
 {
+    if (!consume_kind(TK_TYPE)){
+        return NULL;
+    }
+    //現時点ではintのみ
+    Type *l = calloc(1,sizeof(Type));
+    l->ty = INT;
+
     Type *head = calloc(1, sizeof(Type)); 
     Type *c = head;
     while(consume("*")){
@@ -162,12 +169,6 @@ Type *lvar_type_declare()
        c->ptr_to = n; 
        c = n;
     }
-    if (!consume_kind(TK_TYPE)){
-        return NULL;
-    }
-    //現時点ではintのみ
-    Type *l = calloc(1,sizeof(Type));
-    l->ty = INT;
     c->ptr_to = l;
     return head->ptr_to;
 }
