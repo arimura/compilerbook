@@ -33,7 +33,12 @@ void gen(Node *node)
         printf("    push rax\n");
         return;
     case ND_ASSIGN:
-        gen_lval(node->lhs);
+        //genの再帰で扱う？
+        Node *var = node->lhs;
+        while(var->kind == ND_DEREF){
+            var = var->lhs;
+        }
+        gen_lval(var);
         gen(node->rhs);
 
         printf("# assign\n");
