@@ -36,11 +36,16 @@ void gen(Node *node)
         return;
     case ND_ASSIGN:
         //genの再帰で扱う？
-        Node *var = node->lhs;
-        while(var->kind == ND_DEREF){
-            var = var->lhs;
+        // Node *var = node->lhs;
+        // while(var->kind == ND_DEREF){
+        //     var = var->lhs;
+        // }
+        if(node->lhs->kind == ND_DEREF)
+        {
+            gen(node->lhs);
+        }else{
+            gen_lval(node->lhs);
         }
-        gen_lval(var);
         gen(node->rhs);
 
         printf("# assign\n");
@@ -173,9 +178,11 @@ void gen(Node *node)
         return;
     case ND_DEREF:
         gen(node->lhs);
+        printf("# deref\n");
         printf("    pop rax\n");
         printf("    mov rax, [rax]\n");
         printf("    push rax\n"); 
+        printf("# deref\n");
         return;
     }
 
