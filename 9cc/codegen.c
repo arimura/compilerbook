@@ -24,15 +24,16 @@ static int count(void)
 
 void gen_address(Node *node)
 {
-    switch(node->kind){
-        case ND_LVAR:
-            gen_lval(node);
-            return;
-        case ND_DEREF:
-            gen_address(node->lhs);
-            printf("    pop rax\n");
-            printf("    push [rax]\n");
-            return;
+    switch (node->kind)
+    {
+    case ND_LVAR:
+        gen_lval(node);
+        return;
+    case ND_DEREF:
+        gen_address(node->lhs);
+        printf("    pop rax\n");
+        printf("    push [rax]\n");
+        return;
     }
     error("Not supported on gen_address. node kind: %d", node->kind);
 }

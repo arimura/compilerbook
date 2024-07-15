@@ -80,7 +80,6 @@ bool at_eof()
     return token->kind == TK_EOF;
 }
 
-
 void init_lvar()
 {
     current_lvar = NULL;
@@ -147,7 +146,9 @@ Node *declare_lvar(Token *tok)
 bool is_lvar_decl()
 {
     Token *org = token;
-    while( consume("*")){}
+    while (consume("*"))
+    {
+    }
     bool r = consume_kind(TK_TYPE);
     token = org;
     return r;
@@ -155,19 +156,21 @@ bool is_lvar_decl()
 
 Type *lvar_type_declare()
 {
-    if (!consume_kind(TK_TYPE)){
+    if (!consume_kind(TK_TYPE))
+    {
         return NULL;
     }
-    //現時点ではintのみ
-    Type *l = calloc(1,sizeof(Type));
+    // 現時点ではintのみ
+    Type *l = calloc(1, sizeof(Type));
     l->ty = INT;
 
-    Type *head = calloc(1, sizeof(Type)); 
+    Type *head = calloc(1, sizeof(Type));
     Type *c = head;
-    while(consume("*")){
-       Type *n = calloc(1, sizeof(Type));
-       c->ptr_to = n; 
-       c = n;
+    while (consume("*"))
+    {
+        Type *n = calloc(1, sizeof(Type));
+        c->ptr_to = n;
+        c = n;
     }
     c->ptr_to = l;
     return head->ptr_to;
