@@ -390,6 +390,7 @@ Node *add()
     for (;;)
     {
         if (consume("+"))
+            //ToDo: support ptr + int arithmetic
             node = new_node(ND_ADD, node, mul());
         else if (consume("-"))
             node = new_node(ND_SUB, node, mul());
