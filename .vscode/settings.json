@@ -3,6 +3,10 @@
         "__node_handle": "c",
         "codegen.h": "c",
         "stdio.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "cstdlib": "c",
+        "locale": "c",
+        "new": "c",
+        "ostream": "c"
     }
 }
