@@ -21,6 +21,22 @@ static int count(void)
     static int i = 1;
     return i++;
 }
+
+void gen_address(Node *node)
+{
+    switch(node->kind){
+        case ND_LVAR:
+            gen_lval(node);
+            return;
+        case ND_DEREF:
+            gen_address(node->lhs);
+            printf("    pop rax\n");
+            printf("    push [rax]\n");
+            return;
+    }
+    error("Not supported on gen_address. node kind: %d", node->kind);
+}
+
 void gen(Node *node)
 {
     // fprintf(stderr, "gen: %d\n", node->kind);
@@ -38,25 +54,7 @@ void gen(Node *node)
         printf("# lvar value end\n");
         return;
     case ND_ASSIGN:
-        //To be refactored baed on https://www.sigbus.info/compilerbook#%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF%E3%81%8C%E6%8C%87%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E5%80%A4%E3%81%AB%E4%BB%A3%E5%85%A5%E3%81%99%E3%82%8B
-        //複数のderef(**y = 3;)に対応しているか未確認
-        if (node->lhs->kind == ND_DEREF)
-        {
-            Node *var = node->lhs;
-            while (var->kind == ND_DEREF)
-            {
-                var = var->lhs;
-            }
-            printf("# gen_deref_lval\n");
-            printf("    mov rax, rbp\n");
-            printf("    sub rax, %d\n", var->offset);
-            printf("    push [rax]\n");
-            printf("# gen_dereflval end\n");
-        }
-        else
-        {
-            gen_lval(node->lhs);
-        }
+        gen_address(node->lhs);
         gen(node->rhs);
 
         printf("# assign\n");
