@@ -38,7 +38,7 @@ void gen(Node *node)
         printf("# lvar value end\n");
         return;
     case ND_ASSIGN:
-        //To be refactored.
+        //To be refactored baed on https://www.sigbus.info/compilerbook#%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF%E3%81%8C%E6%8C%87%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E5%80%A4%E3%81%AB%E4%BB%A3%E5%85%A5%E3%81%99%E3%82%8B
         //複数のderef(**y = 3;)に対応しているか未確認
         if (node->lhs->kind == ND_DEREF)
         {
