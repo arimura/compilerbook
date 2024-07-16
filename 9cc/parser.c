@@ -389,9 +389,24 @@ Node *add()
 
     for (;;)
     {
-        if (consume("+"))
-            //ToDo: support ptr + int arithmetic
-            node = new_node(ND_ADD, node, mul());
+        if (consume("+")){
+            Node *l = node;
+            Node *r = mul();
+
+            if(!l->type && !r->type)
+            {
+                //通常の数値 + 数値とみなす
+                node = new_node(ND_ADD, l, r);
+            }
+            else
+            {
+                error("Unsupported ADD ops");
+                // Type *lt = l->type;
+                // Type *rt = r->type;
+
+                // if(lt && lt->ty == PTR && !rt)
+            }
+        }
         else if (consume("-"))
             node = new_node(ND_SUB, node, mul());
         else
