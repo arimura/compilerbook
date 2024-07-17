@@ -308,10 +308,10 @@ Node *declare()
         Node head = {};
         Node *cur = &head;
 
-        Token *ta;
-        while (ta = consume_ident())
+        Type *type;
+        while (type = lvar_type_declare())
         {
-            Node *n = declare_lvar(ta);
+            Node *n = declare_lvar(consume_ident());
             cur->next = n;
             cur = n;
             consume(",");
@@ -389,13 +389,14 @@ Node *add()
 
     for (;;)
     {
-        if (consume("+")){
+        if (consume("+"))
+        {
             Node *l = node;
             Node *r = mul();
 
-            if(!l->type && !r->type)
+            if (!l->type && !r->type)
             {
-                //通常の数値 + 数値とみなす
+                // 通常の数値 + 数値とみなす
                 node = new_node(ND_ADD, l, r);
             }
             else
