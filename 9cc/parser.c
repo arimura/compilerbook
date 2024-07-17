@@ -448,6 +448,21 @@ Node *unary()
         return primary();
     if (consume("-"))
         return new_node(ND_SUB, new_node_num(0), primary());
+    if (consume_kind(TK_SIZEOF))
+    {
+        // only support sizeof(1) or sizeof(var)
+        // Not support sizefo(1 + 1)
+        expect('(');
+        Node *n = unary();
+        expect(')');
+        if (!n->type || n->type->ty == INT)
+        {
+            return new_node_num(4);
+        }
+        // pointer
+        return new_node_num(8);
+    }
+
     return primary();
 }
 
