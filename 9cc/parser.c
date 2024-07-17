@@ -170,6 +170,7 @@ Type *lvar_type_declare()
     while (consume("*"))
     {
         Type *n = calloc(1, sizeof(Type));
+        n->ty = PTR;
         c->ptr_to = n;
         c = n;
     }
@@ -280,6 +281,7 @@ Node *lvar(Token *tok)
     if (lvar)
     {
         node->offset = lvar->offset;
+        node->type = lvar->type;
     }
     else
     {
@@ -395,18 +397,27 @@ Node *add()
             Node *l = node;
             Node *r = mul();
 
-            if (!l->type && !r->type)
+            // 複雑なパターンは一旦無視
+            //  pointer arithmetic
+            if (l && l->type && l->type->ty == PTR)
             {
-                // 通常の数値 + 数値とみなす
-                node = new_node(ND_ADD, l, r);
+                if (r && r->type && r->type->ty == PTR)
+                {
+                    error("poitner + pointer");
+                }
+                node = new_node(ND_ADD, l, new_node(ND_MUL, r, new_node_num(4)));
+            }
+            else if (r && r->type && r->type->ty == PTR)
+            {
+                if (l && l->type && l->type->ty == PTR)
+                {
+                    error("poitner + pointer");
+                }
+                node = new_node(ND_ADD, new_node(ND_MUL, l, new_node_num(4)), r);
             }
             else
             {
-                error("Unsupported ADD ops");
-                // Type *lt = l->type;
-                // Type *rt = r->type;
-
-                // if(lt && lt->ty == PTR && !rt)
+                node = new_node(ND_ADD, l, r);
             }
         }
         else if (consume("-"))
