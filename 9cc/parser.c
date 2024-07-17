@@ -116,7 +116,7 @@ Node *expr()
     return assign();
 }
 
-Node *declare_lvar(Token *tok)
+Node *declare_lvar(Token *tok, Type *type)
 {
     if (tok->kind != TK_INDENT)
     {
@@ -137,6 +137,7 @@ Node *declare_lvar(Token *tok)
         l->name = tok->str;
         l->len = tok->len;
         l->offset = current_lvar ? current_lvar->offset + 8 : 8;
+        l->type = type;
         n->offset = l->offset;
         current_lvar = l;
         return n;
@@ -252,7 +253,7 @@ Node *stmt()
         if (t)
         {
             Token *i = consume_ident();
-            node = declare_lvar(i);
+            node = declare_lvar(i, t);
             node->type = t;
             expect(';');
         }
@@ -311,7 +312,7 @@ Node *declare()
         Type *type;
         while (type = lvar_type_declare())
         {
-            Node *n = declare_lvar(consume_ident());
+            Node *n = declare_lvar(consume_ident(), type);
             cur->next = n;
             cur = n;
             consume(",");

@@ -10,7 +10,7 @@ LVar *find_lvar(Token *tok);
 void enter_scope(void);
 void leave_scope(void);
 Node *expr(void);
-Node *declare_lvar(Token *tok);
+Node *declare_lvar(Token *tok, Type *type);
 bool is_lvar_decl(void);
 Node *stmt(void);
 Node *lvar(Token *tok);

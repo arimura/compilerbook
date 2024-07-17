@@ -73,5 +73,5 @@ assert 1 "int main(){int i; i = 1; return i;}"
 assert 3 "int main(){ int x; int *y; y = &x; *y = 3; return x;}"
 assert 3 "int main(){ int x; int *y; y = &x; x = 3; return *y;}"
 assert 3 "int main(){ int x; int *y; int **z; y = &x; z = &y; **z = 3; return x;}"
-# assert 3 "int main(){ int *p; alloc4(&p, 1,2,3,4); return 3; }"
+assert 3 "int main(){ int *p; int *q; alloc4(&p, 1,2,3,4); q = p + 2; return 3; }"
 echo OK
