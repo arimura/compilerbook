@@ -161,9 +161,10 @@ Type *lvar_type_declare()
     {
         return NULL;
     }
+
     // 現時点ではintのみ
-    Type *l = calloc(1, sizeof(Type));
-    l->ty = INT;
+    Type *base = calloc(1, sizeof(Type));
+    base->ty = INT;
 
     Type *head = calloc(1, sizeof(Type));
     Type *c = head;
@@ -174,7 +175,19 @@ Type *lvar_type_declare()
         c->ptr_to = n;
         c = n;
     }
-    c->ptr_to = l;
+    c->ptr_to = base;
+    
+    if(consume("[")){
+        int num = expect_number();
+
+        Type *a = calloc(1, sizeof(Type));
+        a->ty = ARRAY;
+        a->ptr_to = c;
+        a->array_size = num;
+        head->ptr_to = a;
+        expect(']');
+    }
+
     return head->ptr_to;
 }
 
