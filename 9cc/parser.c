@@ -263,6 +263,7 @@ Node *stmt()
     else
     {
         // local var declaratoin or expression
+        //TODO: arrayにも対応する
         Type *t = lvar_type_declare();
         if (t)
         {
