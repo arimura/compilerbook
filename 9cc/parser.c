@@ -116,34 +116,6 @@ Node *expr()
     return assign();
 }
 
-Node *declare_lvar(Token *tok, Type *type)
-{
-    if (tok->kind != TK_INDENT)
-    {
-        error("Not indent token\n");
-    }
-
-    Node *n = calloc(1, sizeof(Node));
-    n->kind = ND_LVAR;
-    LVar *l = find_lvar(tok);
-    if (l)
-    {
-        error("lvar already declared\n");
-    }
-    else
-    {
-        l = calloc(1, sizeof(LVar));
-        l->next = current_lvar;
-        l->name = tok->str;
-        l->len = tok->len;
-        l->offset = current_lvar ? current_lvar->offset + 8 : 8;
-        l->type = type;
-        n->offset = l->offset;
-        current_lvar = l;
-        return n;
-    }
-}
-
 Node *declare_lvar2()
 {
     if (!consume_kind(TK_TYPE))
@@ -388,12 +360,11 @@ Node *declare()
         Node head = {};
         Node *cur = &head;
 
-        Type *type;
-        while (type = lvar_type_declare())
+        Node *a;
+        while (a = declare_lvar2())
         {
-            Node *n = declare_lvar(consume_ident(), type);
-            cur->next = n;
-            cur = n;
+            cur->next = a;
+            cur = a;
             consume(",");
         }
         expect(')');
