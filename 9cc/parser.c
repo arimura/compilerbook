@@ -170,6 +170,7 @@ Node *declare_lvar2()
     l->next = current_lvar;
     l->name = i->str;
     l->len = i->len;
+    //TODO: arrayのoffset値を計算
     l->offset = current_lvar ? current_lvar->offset + 8 : 8;
     l->type = head->ptr_to;
     n->offset = l->offset;
