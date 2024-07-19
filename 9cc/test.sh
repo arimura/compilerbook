@@ -79,6 +79,6 @@ assert 3 "int main(){ int *p; int *q; alloc4(&p, 1,2,3,4); q = p + 2; return *q;
 assert 4 "int main(){ int t; return sizeof(t);}"
 assert 4 "int main(){ return sizeof(100);}"
 assert 8 "int main(){ int *t; return sizeof(t);}"
-assert 3 "int main(){ int i[2]; return 1; }"
+assert 3 "int main(){ int i[2]; return 3; }"
 # TO DO: handle "int *a[2]"
 echo OK
