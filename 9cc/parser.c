@@ -170,10 +170,27 @@ Node *declare_lvar2()
     l->next = current_lvar;
     l->name = i->str;
     l->len = i->len;
-    //TODO: arrayのoffset値を計算
-    int current_offset =  current_lvar ? current_lvar->offset : 0; 
-    l->offset =current_offset + 8;
     l->type = head->ptr_to;
+    int current_offset = current_lvar ? current_lvar->offset : 0;
+    int offset;
+    if (l->type->ty == INT)
+    {
+        offset = 4;
+    }
+    else if (l->type->ty == PTR)
+    {
+        offset = 8;
+    }
+    else if (l->type->ty == ARRAY)
+    {
+        int array_element_unit = l->type->ptr_to->ty == INT ? 4 : 8;
+        offset = l->type->array_size * array_element_unit;
+    }
+    else
+    {
+        error("Unsupported type for lvar");
+    }
+    l->offset = current_offset + 8;
     n->offset = l->offset;
     current_lvar = l;
     return n;
@@ -304,7 +321,7 @@ Node *stmt()
         // Type *t = lvar_type_declare();
         // if (t)
         Node *l = declare_lvar2();
-        if(l)
+        if (l)
         {
             node = l;
             expect(';');
