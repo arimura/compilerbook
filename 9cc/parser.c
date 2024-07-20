@@ -175,7 +175,7 @@ Node *declare_lvar2()
     int offset;
     if (l->type->ty == INT)
     {
-        offset = 4;
+        offset = 8;
     }
     else if (l->type->ty == PTR)
     {
@@ -183,14 +183,13 @@ Node *declare_lvar2()
     }
     else if (l->type->ty == ARRAY)
     {
-        int array_element_unit = l->type->ptr_to->ty == INT ? 4 : 8;
-        offset = l->type->array_size * array_element_unit;
+        offset = l->type->array_size * 8;
     }
     else
     {
         error("Unsupported type for lvar");
     }
-    l->offset = current_offset + 8;
+    l->offset = current_offset + offset;
     n->offset = l->offset;
     current_lvar = l;
     return n;
