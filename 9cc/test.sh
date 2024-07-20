@@ -82,6 +82,7 @@ assert 8 "int main(){ int *t; return sizeof(t);}"
 assert 3 "int main(){ int i[2]; return 3; }"
 assert 3 "int main(){ int a[2]; *a = 3 ; return 3; }"
 assert 3 "int main(){ int a[2]; *a = 3 ; return *a; }"
+assert 3 "int main(){ int a[2]; *(a + 1) = 3 ; return *(1 + a); }"
 # assert 3 "int main(){ int a[2]; *(a + 1) = 3 ; return *(a + 1); }"
 # TO DO: handle "int *a[2]"
 echo OK

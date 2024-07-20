@@ -22,6 +22,44 @@ static int count(void)
     return i++;
 }
 
+static Type *op_result_type(Node *n1, Node *n2)
+{
+    Type *t1 = n1->type;
+    Type *t2 = n2->type;
+
+    if (!t1)
+    {
+        error("No type for n1");
+    }
+    if (!t2)
+    {
+        error("No typ for n2");
+    }
+
+    if (t1->ty == INT)
+    {
+        // INTの場合は他方の型を優先
+        return t2;
+    }
+    else if (t1->ty == PTR || t1->ty == ARRAY)
+    {
+        // PTR/ARRAYの場合はINTのみ許可
+        if (t2->ty != INT)
+        {
+            error("ptr and no int arithmetic");
+        }
+        return t1;
+    }
+    error("Unexptected type arithmetic");
+}
+
+static Type *int_type()
+{
+    Type *t = calloc(1, sizeof(Type));
+    t->ty = INT;
+    return t;
+}
+
 void gen_address(Node *node)
 {
     switch (node->kind)
@@ -41,6 +79,21 @@ void gen_address(Node *node)
         printf("    pop rax\n");
         printf("    push [rax]\n");
         return;
+    default:
+        gen(node);
+        //'int *a; *(a + 1) = 2;' の '(a + 1)' ようなパターン
+        if (node->type->ty == PTR)
+        {
+            printf("    pop rax\n");
+            printf("    push [rax]\n");
+            return;
+        }
+        //'int a[2]; *(a + 1) = 2;' の '(a + 1)' ようなパターン
+        if (node->type->ty == ARRAY)
+        {
+            printf("# skip latest stack deref for array\n");
+            return;
+        }
     }
     error("Not supported on gen_address. node kind: %d", node->kind);
 }
@@ -230,36 +283,44 @@ void gen(Node *node)
     {
     case ND_ADD:
         printf("    add rax, rdi\n");
+        node->type = op_result_type(node->lhs, node->rhs);
         break;
     case ND_SUB:
         printf("    sub rax, rdi\n");
+        node->type = op_result_type(node->lhs, node->rhs);
         break;
     case ND_MUL:
         printf("    imul rax, rdi\n");
+        node->type = int_type();
         break;
     case ND_DIV:
         printf("    cqo\n");
         printf("    idiv rdi\n");
+        node->type = int_type();
         break;
     case ND_LESS_THAN:
         printf("    cmp rax, rdi\n");
         printf("    setl al\n");
         printf("    movzb rax, al\n");
+        node->type = int_type();
         break;
     case ND_EQUAL_LESS_THAN:
         printf("    cmp rax, rdi\n");
         printf("    setle al\n");
         printf("    movzb rax, al\n");
+        node->type = int_type();
         break;
     case ND_EQ:
         printf("    cmp rax, rdi\n");
         printf("    sete al\n");
         printf("    movzb rax, al\n");
+        node->type = int_type();
         break;
     case ND_NE:
         printf("    cmp rax, rdi\n");
         printf("    setne al\n");
         printf("    movzb rax, al\n");
+        node->type = int_type();
         break;
     }
 
