@@ -171,7 +171,8 @@ Node *declare_lvar2()
     l->name = i->str;
     l->len = i->len;
     //TODO: arrayのoffset値を計算
-    l->offset = current_lvar ? current_lvar->offset + 8 : 8;
+    int current_offset =  current_lvar ? current_lvar->offset : 0; 
+    l->offset =current_offset + 8;
     l->type = head->ptr_to;
     n->offset = l->offset;
     current_lvar = l;
