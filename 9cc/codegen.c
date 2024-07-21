@@ -115,6 +115,7 @@ void gen(Node *node)
         printf("# lvar value end\n");
         return;
     case ND_ASSIGN:
+        //TODO: lhsにpointer/arrayの計算がある場合に対応する
         gen_address(node->lhs);
         gen(node->rhs);
 
