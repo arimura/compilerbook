@@ -10,6 +10,3 @@ demo:
 
 clean:
 	rm -f demo
-
-	
-	
