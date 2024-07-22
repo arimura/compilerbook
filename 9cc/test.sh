@@ -76,6 +76,7 @@ assert 3 "int main(){ int x; int *y; int **z; y = &x; z = &y; **z = 3; return x;
 assert 1 "int main(){ int *p; int *q; alloc4(&p, 1,2,3,4); q = p; return *q; }"
 assert 2 "int main(){ int *p; int *q; alloc4(&p, 1,2,3,4); q = p + 1; return *q; }"
 assert 3 "int main(){ int *p; int *q; alloc4(&p, 1,2,3,4); q = p + 2; return *q; }"
+# assert 10 "int main(){ int *p; int *q; alloc4(&p, 1,2,3,4); *(p + 1) = 10; return *(p + 1); }"
 assert 4 "int main(){ int t; return sizeof(t);}"
 assert 4 "int main(){ return sizeof(100);}"
 assert 8 "int main(){ int *t; return sizeof(t);}"
