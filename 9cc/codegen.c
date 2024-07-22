@@ -98,6 +98,8 @@ void gen_address(Node *node)
     error("Not supported on gen_address. node kind: %d", node->kind);
 }
 
+//TODO: "="のlhsとrhsでARRAYの挙動が異なるので、それを考慮する
+//deref node側でaddress生成時にvalue生成時を分けないと対処できない
 void gen(Node *node)
 {
     // fprintf(stderr, "gen: %d\n", node->kind);
