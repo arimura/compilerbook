@@ -79,21 +79,22 @@ void gen_address(Node *node)
         printf("    pop rax\n");
         printf("    push [rax]\n");
         return;
-    default:
-        gen(node);
-        //'int *a; *(a + 1) = 2;' の '(a + 1)' ようなパターン
-        if (node->type->ty == PTR)
-        {
-            printf("    pop rax\n");
-            printf("    push [rax]\n");
-            return;
-        }
-        //'int a[2]; *(a + 1) = 2;' の '(a + 1)' ようなパターン
-        if (node->type->ty == ARRAY)
-        {
-            printf("# skip latest stack deref for array\n");
-            return;
-        }
+    // TODO: 不要なら消す
+    // default:
+    //     gen(node);
+    //     //'int *a; *(a + 1) = 2;' の '(a + 1)' ようなパターン
+    //     if (node->type->ty == PTR)
+    //     {
+    //         printf("    pop rax\n");
+    //         printf("    push [rax]\n");
+    //         return;
+    //     }
+    //     //'int a[2]; *(a + 1) = 2;' の '(a + 1)' ようなパターン
+    //     if (node->type->ty == ARRAY)
+    //     {
+    //         printf("# skip latest stack deref for array\n");
+    //         return;
+    //     }
     }
     error("Not supported on gen_address. node kind: %d", node->kind);
 }
