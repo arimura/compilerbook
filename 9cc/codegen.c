@@ -70,11 +70,11 @@ void gen_address(Node *node)
     case ND_DEREF:
         gen(node->lhs);
 
-        if (node->lhs->type && node->lhs->type->ty == ARRAY)
-        {
-            printf("# skip latest stack deref for array\n");
-            return;
-        }
+        // if (node->lhs->type && node->lhs->type->ty == ARRAY)
+        // {
+        //     printf("# skip latest stack deref for array\n");
+        //     return;
+        // }
 
         // printf("    pop rax\n");
         // printf("    push [rax]\n");
@@ -111,6 +111,12 @@ void gen(Node *node)
         return;
     case ND_LVAR:
         gen_lval_address(node);
+        if(node->type && node->type->ty == ARRAY)
+        {
+            printf("# skip lvar value for ARRAY\n");
+            return;
+        }
+
         printf("# lvar value\n");
         printf("    pop rax\n");
         printf("    mov rax, [rax]\n");
