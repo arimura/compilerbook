@@ -118,7 +118,7 @@ Node *expr()
     return assign();
 }
 
-Node *declare_lvar2()
+Node *declare_lvar()
 {
     if (!consume_kind(TK_TYPE))
     {
@@ -284,7 +284,7 @@ Node *stmt()
         // e.g. int i[2];
         // Type *t = lvar_type_declare();
         // if (t)
-        Node *l = declare_lvar2();
+        Node *l = declare_lvar();
         if (l)
         {
             node = l;
@@ -361,7 +361,7 @@ Node *declare()
         Node *cur = &head;
 
         Node *a;
-        while (a = declare_lvar2())
+        while (a = declare_lvar())
         {
             cur->next = a;
             cur = a;
