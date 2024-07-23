@@ -307,6 +307,7 @@ Node *lvar(Token *tok)
         return NULL;
     }
 
+    Node *ret;
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_LVAR;
     LVar *lvar = find_lvar(tok);
@@ -319,7 +320,21 @@ Node *lvar(Token *tok)
     {
         error("変数が見つかりません");
     }
-    return node;
+
+    //配列添字
+    if(lvar->type->ty == ARRAY && consume("["))
+    {
+        int s = expect_number();
+        ret = new_node(ND_ADD, node, new_node_num(s));
+        expect(']');
+        
+    }
+    else
+    {
+        ret = node;
+    }
+
+    return ret;
 }
 
 Node *declare()
@@ -526,6 +541,7 @@ Node *primary()
     if (tok)
     {
 
+        //func call
         if (consume("("))
         {
             Node *node = calloc(1, sizeof(Node));
