@@ -321,8 +321,8 @@ Node *lvar(Token *tok)
         error("変数が見つかりません");
     }
 
-    //配列添字
-    if(lvar->type->ty == ARRAY && consume("["))
+    // 配列添字
+    if (lvar->type->ty == ARRAY && consume("["))
     {
         int s = expect_number();
         Node *d = calloc(1, sizeof(Node));
@@ -543,7 +543,7 @@ Node *primary()
     if (tok)
     {
 
-        //func call
+        // func call
         if (consume("("))
         {
             Node *node = calloc(1, sizeof(Node));

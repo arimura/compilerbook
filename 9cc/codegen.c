@@ -84,7 +84,7 @@ void gen(Node *node)
         return;
     case ND_LVAR:
         gen_lval_address(node);
-        if(node->type && node->type->ty == ARRAY)
+        if (node->type && node->type->ty == ARRAY)
         {
             printf("# skip lvar value for ARRAY\n");
             return;
