@@ -374,12 +374,7 @@ Node *declare()
         leave_scope();
         return node;
     }
-    else
-    {
-        error("トップレベルでは宣言が必要です");
-    }
-    // 今は関数外のstatementも許可
-    return stmt();
+    error("トップレベルでは宣言が必要です");
 }
 
 void program()
