@@ -69,15 +69,6 @@ void gen_address(Node *node)
         return;
     case ND_DEREF:
         gen(node->lhs);
-
-        // if (node->lhs->type && node->lhs->type->ty == ARRAY)
-        // {
-        //     printf("# skip latest stack deref for array\n");
-        //     return;
-        // }
-
-        // printf("    pop rax\n");
-        // printf("    push [rax]\n");
         return;
     // TODO: 不要なら消す
     // default:
@@ -268,12 +259,6 @@ void gen(Node *node)
         return;
     case ND_DEREF:
         gen(node->lhs);
-
-        // if (node->lhs->type && node->lhs->type->ty == ARRAY)
-        // {
-        //     printf("# skip latest stack deref for array\n");
-        //     return;
-        // }
 
         printf("# deref\n");
         printf("    pop rax\n");
