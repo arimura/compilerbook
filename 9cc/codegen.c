@@ -269,11 +269,11 @@ void gen(Node *node)
     case ND_DEREF:
         gen(node->lhs);
 
-        if (node->lhs->type && node->lhs->type->ty == ARRAY)
-        {
-            printf("# skip latest stack deref for array\n");
-            return;
-        }
+        // if (node->lhs->type && node->lhs->type->ty == ARRAY)
+        // {
+        //     printf("# skip latest stack deref for array\n");
+        //     return;
+        // }
 
         printf("# deref\n");
         printf("    pop rax\n");
