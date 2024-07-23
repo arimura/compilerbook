@@ -86,5 +86,5 @@ assert 3 "int main(){ int a[2]; *a = 3 ; return 3; }"
 assert 3 "int main(){ int a[2]; *a = 3 ; return *a; }"
 assert 3 "int main(){ int a[2]; *(a + 1) = 3 ; return *(1 + a); }"
 assert 3 "int main(){ int a[2]; a[1] = 3 ; return 3; }"
-# assert 3 "int main(){ int a[2]; a[1] = 3 ; return a[1]; }"
+assert 3 "int main(){ int a[2]; a[1] = 3 ; return a[1]; }"
 echo OK

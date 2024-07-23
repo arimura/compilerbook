@@ -325,9 +325,11 @@ Node *lvar(Token *tok)
     if(lvar->type->ty == ARRAY && consume("["))
     {
         int s = expect_number();
-        ret = new_node(ND_ADD, node, new_node_num(s));
+        Node *d = calloc(1, sizeof(Node));
+        d->kind = ND_DEREF;
+        d->lhs = new_node(ND_ADD, node, new_node_num(s));
+        ret = d;
         expect(']');
-        
     }
     else
     {
