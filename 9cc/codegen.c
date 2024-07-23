@@ -68,7 +68,7 @@ void gen_address(Node *node)
         gen_lval_address(node);
         return;
     case ND_DEREF:
-        gen_address(node->lhs);
+        gen(node->lhs);
 
         if (node->lhs->type && node->lhs->type->ty == ARRAY)
         {
@@ -76,8 +76,8 @@ void gen_address(Node *node)
             return;
         }
 
-        printf("    pop rax\n");
-        printf("    push [rax]\n");
+        // printf("    pop rax\n");
+        // printf("    push [rax]\n");
         return;
     // TODO: 不要なら消す
     // default:

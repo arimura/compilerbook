@@ -70,6 +70,7 @@ assert 0 "int rec(int x, int y){if(x == 0){return x;} return rec(x - 1, y * 2);}
 assert 8 "int fib(int p, int n, int i){if(i == 0){return n;} return fib(n, p + n, i -1) ;} int main(){return fib(1,1,4);}"
 assert 2 "int main(){int v;int p;v = 2;p = &v; return *p;}"
 assert 1 "int main(){int i; i = 1; return i;}"
+assert 3 "int main(){ int x; int *y; y = &x; return 3;}"
 assert 3 "int main(){ int x; int *y; y = &x; *y = 3; return x;}"
 assert 3 "int main(){ int x; int *y; y = &x; x = 3; return *y;}"
 assert 3 "int main(){ int x; int *y; int **z; y = &x; z = &y; **z = 3; return x;}"
