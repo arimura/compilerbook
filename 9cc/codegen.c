@@ -70,28 +70,10 @@ void gen_address(Node *node)
     case ND_DEREF:
         gen(node->lhs);
         return;
-    // TODO: 不要なら消す
-    // default:
-    //     gen(node);
-    //     //'int *a; *(a + 1) = 2;' の '(a + 1)' ようなパターン
-    //     if (node->type->ty == PTR)
-    //     {
-    //         printf("    pop rax\n");
-    //         printf("    push [rax]\n");
-    //         return;
-    //     }
-    //     //'int a[2]; *(a + 1) = 2;' の '(a + 1)' ようなパターン
-    //     if (node->type->ty == ARRAY)
-    //     {
-    //         printf("# skip latest stack deref for array\n");
-    //         return;
-    //     }
     }
     error("Not supported on gen_address. node kind: %d", node->kind);
 }
 
-//TODO: "="のlhsとrhsでARRAYの挙動が異なるので、それを考慮する
-//deref node側でaddress生成時にvalue生成時を分けないと対処できない
 void gen(Node *node)
 {
     // fprintf(stderr, "gen: %d\n", node->kind);
@@ -115,7 +97,6 @@ void gen(Node *node)
         printf("# lvar value end\n");
         return;
     case ND_ASSIGN:
-        //TODO: lhsにpointer/arrayの計算がある場合に対応する
         gen_address(node->lhs);
         gen(node->rhs);
 
