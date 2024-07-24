@@ -197,6 +197,45 @@ Node *declare_lvar()
     return n;
 }
 
+Node *declare_func()
+{
+    Node *node = calloc(1, sizeof(Node));
+    // 関数宣言
+    if (!consume_kind(TK_TYPE))
+    {
+        error("関数宣言の型がありません");
+    }
+
+    Token *t = consume_ident();
+    if (!t)
+    {
+        error("関数名がありません");
+    }
+
+    enter_scope();
+    init_lvar();
+    expect('(');
+    node->kind = ND_FUNC;
+    node->funcname = t->str;
+    node->funcname_len = t->len;
+    Node head = {};
+    Node *cur = &head;
+
+    Node *a;
+    while (a = declare_lvar())
+    {
+        cur->next = a;
+        cur = a;
+        consume(",");
+    }
+    expect(')');
+    node->args = head.next;
+    node->body = stmt();
+    destroy_lvar();
+    leave_scope();
+    return node; 
+}
+
 bool is_lvar_decl()
 {
     Token *org = token;
@@ -368,41 +407,12 @@ Node *lvar(Token *tok)
 
 Node *declare()
 {
-    Node *node = calloc(1, sizeof(Node));
-    // 関数宣言
-    if (!consume_kind(TK_TYPE))
+    if(is_func_decl())
     {
-        error("宣言の型がありません");
+        return declare_func();
     }
 
-    Token *t = consume_ident();
-    if (!t)
-    {
-        error("トップレベルでは宣言が必要です");
-    }
-
-    enter_scope();
-    init_lvar();
-    expect('(');
-    node->kind = ND_FUNC;
-    node->funcname = t->str;
-    node->funcname_len = t->len;
-    Node head = {};
-    Node *cur = &head;
-
-    Node *a;
-    while (a = declare_lvar())
-    {
-        cur->next = a;
-        cur = a;
-        consume(",");
-    }
-    expect(')');
-    node->args = head.next;
-    node->body = stmt();
-    destroy_lvar();
-    leave_scope();
-    return node;
+    error("Invalid declare");
 }
 
 void program()
