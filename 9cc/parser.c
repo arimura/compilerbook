@@ -237,6 +237,86 @@ Node *declare_func()
     return node;
 }
 
+Node *declare_gvar()
+{
+    if (!consume_kind(TK_TYPE))
+    {
+        return NULL;
+    }
+
+    // 変数名の左側の型情報（"int *i[3]"の"int *"の部分）
+    //  現時点ではintのみ
+    Type *base = calloc(1, sizeof(Type));
+    base->ty = INT;
+    Type *head = calloc(1, sizeof(Type));
+    Type *c = head;
+    while (consume("*"))
+    {
+        Type *n = calloc(1, sizeof(Type));
+        n->ty = PTR;
+        c->ptr_to = n;
+        c = n;
+    }
+    c->ptr_to = base;
+
+    // 変数名のtoken
+    Token *i = consume_ident();
+    if (!i || i->kind != TK_INDENT)
+    {
+        error("Not indent token\n");
+    }
+
+    // 変数名の右側の型情報（"int i[3]"の"[3]"の部分）
+    if (consume("["))
+    {
+        int num = expect_number();
+        Type *a = calloc(1, sizeof(Type));
+        a->ty = ARRAY;
+        a->ptr_to = c;
+        a->array_size = num;
+        head->ptr_to = a;
+        expect(']');
+    }
+
+    // 変数ノードの生成とLVar型を管理用データ構造に登録
+    Node *n = calloc(1, sizeof(Node));
+    n->kind = ND_GVAR;
+    GVar *g;
+    // GVar *l = find_lvar(i);
+    if (g)
+    {
+        error("gvar already declared\n");
+    }
+
+    g = calloc(1, sizeof(LVar));
+    // g->next = current_lvar;
+    g->name = i->str;
+    g->len = i->len;
+    g->type = head->ptr_to;
+    int current_offset = current_lvar ? current_lvar->offset : 0;
+    int offset;
+    if (g->type->ty == INT)
+    {
+        offset = 8;
+    }
+    else if (g->type->ty == PTR)
+    {
+        offset = 8;
+    }
+    else if (g->type->ty == ARRAY)
+    {
+        offset = g->type->array_size * 8;
+    }
+    else
+    {
+        error("Unsupported type for lvar");
+    }
+    // g->offset = current_offset + offset;
+    // n->offset = g->offset;
+    // current_lvar = l;
+    return n;
+}
+
 bool is_lvar_decl()
 {
     Token *org = token;
