@@ -1,7 +1,7 @@
 #include "parser.h"
 Scope *scope = &(Scope){};
 LVar *current_lvar;
-GVar *gvar;
+GVar *global_var;
 
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
@@ -103,7 +103,7 @@ LVar *find_lvar(Token *tok)
 
 GVar *find_gvar(Token *tok)
 {
-    for (GVar *var = gvar; var; var = var->next)
+    for (GVar *var = global_var; var; var = var->next)
     {
         if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
         {
@@ -298,12 +298,12 @@ Node *declare_gvar()
         error("gvar already declared\n");
     }
 
-    g = calloc(1, sizeof(LVar));
-    g->next = gvar;
+    g = calloc(1, sizeof(GVar));
+    g->next = global_var;
     g->name = i->str;
     g->len = i->len;
     g->type = head->ptr_to;
-    gvar = g;
+    global_var = g;
     return n;
 }
 
@@ -455,7 +455,7 @@ Node *lvar(Token *tok)
     }
     else
     {
-        error("変数が見つかりません");
+        return NULL;
     }
 
     // 配列添字
@@ -476,14 +476,73 @@ Node *lvar(Token *tok)
     return ret;
 }
 
+Node *gvar(Token *tok)
+{
+    if (tok->kind != TK_INDENT)
+    {
+        return NULL;
+    }
+
+    Node *ret;
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_GVAR;
+    GVar *gvar = find_gvar(tok);
+    if (gvar)
+    {
+        node->type = gvar->type;
+    }
+    else
+    {
+        return NULL;
+    }
+
+    // 配列添字
+    if (gvar->type->ty == ARRAY && consume("["))
+    {
+        int s = expect_number();
+        Node *d = calloc(1, sizeof(Node));
+        d->kind = ND_DEREF;
+        d->lhs = new_node(ND_ADD, node, new_node_num(s));
+        ret = d;
+        expect(']');
+    }
+    else
+    {
+        ret = node;
+    }
+
+    return ret;
+}
+
+Node *var(Token *t)
+{
+    Node *v = lvar(t);
+    if (v)
+    {
+        return v;
+    }
+
+    v = gvar(t);
+    if (v)
+    {
+        return v;
+    }
+
+    error("Undefined var");
+}
+
 Node *declare()
 {
     if (is_func_decl())
     {
         return declare_func();
     }
-
-    error("Invalid declare");
+    else
+    {
+        Node *g = declare_gvar();
+        expect(';');
+        return g;
+    }
 }
 
 void program()
@@ -667,7 +726,7 @@ Node *primary()
             return node;
         }
 
-        return lvar(tok);
+        return var(tok);
     }
 
     return new_node_num(expect_number());

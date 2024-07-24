@@ -96,6 +96,9 @@ void gen(Node *node)
         printf("    push rax\n");
         printf("# lvar value end\n");
         return;
+    case ND_GVAR:
+        printf("# hoge\n");
+        return;
     case ND_ASSIGN:
         gen_address(node->lhs);
         gen(node->rhs);
