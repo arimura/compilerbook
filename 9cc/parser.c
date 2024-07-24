@@ -208,6 +208,33 @@ bool is_lvar_decl()
     return r;
 }
 
+bool is_func_decl()
+{
+    Token *org = token;
+    Token *t = consume_type();
+    if (!t)
+    {
+        token = org;
+        return false;
+    }
+
+    t = consume_ident();
+    if (!t)
+    {
+        token = org;
+        return false;
+    }
+
+    if (!consume("("))
+    {
+        token = org;
+        return false;
+    }
+    
+    token = org;
+    return true;
+}
+
 Node *stmt()
 {
     Node *node;
@@ -345,36 +372,37 @@ Node *declare()
     // 関数宣言
     if (!consume_kind(TK_TYPE))
     {
-        error("関数の戻り値の型がありません");
+        error("宣言の型がありません");
     }
 
     Token *t = consume_ident();
-    if (t)
+    if (!t)
     {
-        enter_scope();
-        init_lvar();
-        expect('(');
-        node->kind = ND_FUNC;
-        node->funcname = t->str;
-        node->funcname_len = t->len;
-        Node head = {};
-        Node *cur = &head;
-
-        Node *a;
-        while (a = declare_lvar())
-        {
-            cur->next = a;
-            cur = a;
-            consume(",");
-        }
-        expect(')');
-        node->args = head.next;
-        node->body = stmt();
-        destroy_lvar();
-        leave_scope();
-        return node;
+        error("トップレベルでは宣言が必要です");
     }
-    error("トップレベルでは宣言が必要です");
+
+    enter_scope();
+    init_lvar();
+    expect('(');
+    node->kind = ND_FUNC;
+    node->funcname = t->str;
+    node->funcname_len = t->len;
+    Node head = {};
+    Node *cur = &head;
+
+    Node *a;
+    while (a = declare_lvar())
+    {
+        cur->next = a;
+        cur = a;
+        consume(",");
+    }
+    expect(')');
+    node->args = head.next;
+    node->body = stmt();
+    destroy_lvar();
+    leave_scope();
+    return node;
 }
 
 void program()
