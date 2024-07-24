@@ -101,6 +101,18 @@ LVar *find_lvar(Token *tok)
     return NULL;
 }
 
+GVar *find_gvar(Token *tok)
+{
+    for (GVar *var = gvar; var; var = var->next)
+    {
+        if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
+        {
+            return var;
+        }
+    }
+    return NULL;
+}
+
 void enter_scope()
 {
     Scope *s = calloc(1, sizeof(Scope));
@@ -278,42 +290,20 @@ Node *declare_gvar()
         expect(']');
     }
 
-    // 変数ノードの生成とLVar型を管理用データ構造に登録
     Node *n = calloc(1, sizeof(Node));
     n->kind = ND_GVAR;
-    GVar *g;
-    // GVar *l = find_lvar(i);
+    GVar *g = find_gvar(i);
     if (g)
     {
         error("gvar already declared\n");
     }
 
     g = calloc(1, sizeof(LVar));
-    // g->next = current_lvar;
+    g->next = gvar;
     g->name = i->str;
     g->len = i->len;
     g->type = head->ptr_to;
-    int current_offset = current_lvar ? current_lvar->offset : 0;
-    int offset;
-    if (g->type->ty == INT)
-    {
-        offset = 8;
-    }
-    else if (g->type->ty == PTR)
-    {
-        offset = 8;
-    }
-    else if (g->type->ty == ARRAY)
-    {
-        offset = g->type->array_size * 8;
-    }
-    else
-    {
-        error("Unsupported type for lvar");
-    }
-    // g->offset = current_offset + offset;
-    // n->offset = g->offset;
-    // current_lvar = l;
+    gvar = g;
     return n;
 }
 

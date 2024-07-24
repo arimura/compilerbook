@@ -7,6 +7,7 @@
 void init_lvar(void);
 void destroy_lvar(void);
 LVar *find_lvar(Token *tok);
+GVar *find_gvar(Token *tok);
 void enter_scope(void);
 void leave_scope(void);
 Node *expr(void);
