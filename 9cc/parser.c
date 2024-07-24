@@ -1,6 +1,7 @@
 #include "parser.h"
 Scope *scope = &(Scope){};
 LVar *current_lvar;
+GVar *gvar;
 
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
@@ -233,7 +234,7 @@ Node *declare_func()
     node->body = stmt();
     destroy_lvar();
     leave_scope();
-    return node; 
+    return node;
 }
 
 bool is_lvar_decl()
@@ -269,7 +270,7 @@ bool is_func_decl()
         token = org;
         return false;
     }
-    
+
     token = org;
     return true;
 }
@@ -407,7 +408,7 @@ Node *lvar(Token *tok)
 
 Node *declare()
 {
-    if(is_func_decl())
+    if (is_func_decl())
     {
         return declare_func();
     }

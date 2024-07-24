@@ -58,6 +58,7 @@ typedef enum
     ND_FUNC_ARG,
     ND_ADDR,
     ND_DEREF,
+    ND_GVAR,
 } NodeKind;
 
 typedef struct Node Node;
@@ -96,6 +97,14 @@ struct LVar {
     char *name;
     int len;
     int offset;
+    Type *type;
+};
+
+typedef struct GVar GVar;
+struct GVar {
+    GVar *next;
+    char *name;
+    int len;
     Type *type;
 };
 
