@@ -97,7 +97,8 @@ void gen(Node *node)
         printf("# lvar value end\n");
         return;
     case ND_GVAR:
-        printf("# hoge\n");
+        printf("# gvar declare\n");
+        printf("# gvar declare end\n");
         return;
     case ND_ASSIGN:
         gen_address(node->lhs);
