@@ -97,7 +97,14 @@ void gen(Node *node)
         printf("# lvar value end\n");
         return;
     case ND_GVAR_DECL:
+        char *gvar_name = malloc((node->gvarname_len + 1) * sizeof(char));
+        strncpy(gvar_name, node->gvarname, node->gvarname_len);
+        gvar_name[node->gvarname_len] = '\0';
+
         printf("# gvar declare\n");
+        printf("%s:\n", gvar_name);
+        //lvarではintを8にしているので合わせる
+        printf("    .zero %d\n", node->type->ty == ARRAY ? 8 * (int)node->type->array_size : 8);
         printf("# gvar declare end\n");
         return;
     case ND_ASSIGN:

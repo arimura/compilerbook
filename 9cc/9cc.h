@@ -90,6 +90,10 @@ struct Node
     char *argname;
     Node *args;
     int argname_len;
+
+    //global variable
+    char *gvarname;
+    int gvarname_len;
 };
 
 typedef struct LVar LVar;

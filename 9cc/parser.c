@@ -304,6 +304,10 @@ Node *declare_gvar()
     g->len = i->len;
     g->type = head->ptr_to;
     global_var = g;
+
+    n->type = g->type;
+    n->gvarname = g->name;
+    n->gvarname_len = g->len;
     return n;
 }
 
@@ -490,6 +494,8 @@ Node *gvar(Token *tok)
     if (gvar)
     {
         node->type = gvar->type;
+        node->gvarname = gvar->name;
+        node->gvarname_len = gvar->len;
     }
     else
     {
