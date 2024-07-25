@@ -291,7 +291,7 @@ Node *declare_gvar()
     }
 
     Node *n = calloc(1, sizeof(Node));
-    n->kind = ND_GVAR;
+    n->kind = ND_GVAR_DECL;
     GVar *g = find_gvar(i);
     if (g)
     {

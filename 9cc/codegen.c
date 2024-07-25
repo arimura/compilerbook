@@ -96,7 +96,7 @@ void gen(Node *node)
         printf("    push rax\n");
         printf("# lvar value end\n");
         return;
-    case ND_GVAR:
+    case ND_GVAR_DECL:
         printf("# gvar declare\n");
         printf("# gvar declare end\n");
         return;
