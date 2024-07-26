@@ -556,9 +556,9 @@ void program()
     int i = 0;
     while (!at_eof())
     {
-        code[i++] = declare();
+        text[i++] = declare();
     }
-    code[i] = NULL;
+    text[i] = NULL;
 }
 
 Node *assign()

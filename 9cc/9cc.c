@@ -12,7 +12,7 @@
 
 char *user_input;
 Token *token;
-Node *code[100];
+Node *text[100];
 
 void error(char *fmt, ...)
 {
@@ -134,9 +134,9 @@ void printNode(const Node *node, int depth)
 
 void printCode()
 {
-    for (int i = 0; code[i]; i++)
+    for (int i = 0; text[i]; i++)
     {
-        printNode(code[i], 0);
+        printNode(text[i], 0);
     }
 }
 
@@ -311,9 +311,9 @@ int main(int argc, char **argv)
 
     printf(".intel_syntax noprefix\n");
 
-    for (int i = 0; code[i]; i++)
+    for (int i = 0; text[i]; i++)
     {
-        gen(code[i]);
+        gen(text[i]);
     }
 
     return 0;
