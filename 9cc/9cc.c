@@ -312,11 +312,13 @@ int main(int argc, char **argv)
 
     printf(".intel_syntax noprefix\n");    
 
+    printf(".section .data\n");
     for (int i = 0; data[i]; i++)
     {
         gen(data[i]);
     }
 
+    printf(".section .text\n");
     for (int i = 0; text[i]; i++)
     {
         gen(text[i]);
