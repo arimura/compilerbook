@@ -117,6 +117,14 @@ void gen(Node *node)
         printf("    .zero %d\n", node->type->ty == ARRAY ? 8 * (int)node->type->array_size : 8);
         printf("# gvar declare end\n");
         return;
+    case ND_GVAR:
+        gen_address(node);
+        printf("# gvar\n");
+        printf("    pop rax\n");
+        printf("    mov rax, [rax]\n");
+        printf("    push rax\n");
+        printf("# gvar end\n");
+        return;
     case ND_ASSIGN:
         gen_address(node->lhs);
         gen(node->rhs);
