@@ -310,7 +310,6 @@ int main(int argc, char **argv)
     // printCode();
 
     printf(".intel_syntax noprefix\n");
-    printf(".globl main\n");
 
     for (int i = 0; code[i]; i++)
     {
