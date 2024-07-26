@@ -125,4 +125,5 @@ void leave_scope();
 void error(char *fmt, ...);
 
 extern Token *token;
+extern Node *data[100];
 extern Node *text[100];

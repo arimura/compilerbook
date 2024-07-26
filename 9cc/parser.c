@@ -553,12 +553,23 @@ Node *declare()
 
 void program()
 {
-    int i = 0;
+    int idxData = 0;
+    int idxText = 0;
+
     while (!at_eof())
     {
-        text[i++] = declare();
+        Node *n = declare();
+        if(n->kind == ND_GVAR_DECL)
+        {
+            data[idxData++] = n;
+        }
+        else
+        {
+            text[idxText++] = n;
+        }
     }
-    text[i] = NULL;
+    data[idxText] = NULL;
+    text[idxText] = NULL;
 }
 
 Node *assign()

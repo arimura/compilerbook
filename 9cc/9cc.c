@@ -12,6 +12,7 @@
 
 char *user_input;
 Token *token;
+Node *data[100];
 Node *text[100];
 
 void error(char *fmt, ...)
@@ -309,7 +310,12 @@ int main(int argc, char **argv)
     program();
     // printCode();
 
-    printf(".intel_syntax noprefix\n");
+    printf(".intel_syntax noprefix\n");    
+
+    for (int i = 0; data[i]; i++)
+    {
+        gen(data[i]);
+    }
 
     for (int i = 0; text[i]; i++)
     {
