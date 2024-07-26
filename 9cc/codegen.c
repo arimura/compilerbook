@@ -119,6 +119,11 @@ void gen(Node *node)
         return;
     case ND_GVAR:
         gen_address(node);
+        if (node->type && node->type->ty == ARRAY)
+        {
+            printf("# skip gvar value for ARRAY\n");
+            return;
+        }
         printf("# gvar\n");
         printf("    pop rax\n");
         printf("    mov rax, [rax]\n");
