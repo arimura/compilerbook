@@ -3,6 +3,14 @@
 #include <string.h>
 #include <stdlib.h>
 
+char *get_name(char *org, int len)
+{
+    char *name = malloc((len + 1) * sizeof(char));
+    strncpy(name, org, len);
+    name[len] = '\0';
+    return name;
+}
+
 // Generates the assembly code to push the address of a local variable onto the stack.
 void gen_lval_address(Node *node)
 {
@@ -70,6 +78,12 @@ void gen_address(Node *node)
     case ND_DEREF:
         gen(node->lhs);
         return;
+    case ND_GVAR:
+        printf("# gen gvar address\n");
+        printf("    lea rax, [rip + %s]\n", get_name(node->gvarname, node->gvarname_len));
+        printf("    push rax\n");
+        printf("# gen gvar address end\n");
+        return;
     }
     error("Not supported on gen_address. node kind: %d", node->kind);
 }
@@ -97,13 +111,9 @@ void gen(Node *node)
         printf("# lvar value end\n");
         return;
     case ND_GVAR_DECL:
-        char *gvar_name = malloc((node->gvarname_len + 1) * sizeof(char));
-        strncpy(gvar_name, node->gvarname, node->gvarname_len);
-        gvar_name[node->gvarname_len] = '\0';
-
         printf("# gvar declare\n");
-        printf("%s:\n", gvar_name);
-        //lvarではintを8にしているので合わせる
+        printf("%s:\n", get_name(node->gvarname, node->gvarname_len));
+        // lvarではintを8にしているので合わせる
         printf("    .zero %d\n", node->type->ty == ARRAY ? 8 * (int)node->type->array_size : 8);
         printf("# gvar declare end\n");
         return;
