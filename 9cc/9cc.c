@@ -251,6 +251,20 @@ Token *tokenize(char *p)
             continue;
         }
 
+        if(*p == '"')
+        {
+            char *cnt = p;
+            do 
+            {
+                cnt++;
+            }
+            while(*p == '"');
+            cur = new_token(TK_RESERVED, cur, p);
+            cur->len = cnt - p;
+            p = cnt;
+            continue;
+        }
+
         if (is_ident1(*p))
         {
             char *cnt = p;
