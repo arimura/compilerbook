@@ -95,6 +95,10 @@ struct Node
     //global variable
     char *gvarname;
     int gvarname_len;
+
+    //string literal
+    char *strliteral;
+    int strliteral_len;
 };
 
 typedef struct LVar LVar;
