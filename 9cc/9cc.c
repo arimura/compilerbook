@@ -260,7 +260,7 @@ Token *tokenize(char *p)
             {
                 cnt++;
             }
-            cur = new_token(TK_STRING, cur, p);
+            cur = new_token(TK_STRING_LITERAL, cur, p);
             cur->len = cnt - p;
             //skip right double quote
             p = cnt + 1;

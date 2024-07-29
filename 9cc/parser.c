@@ -537,6 +537,20 @@ Node *var(Token *t)
     error("Undefined var");
 }
 
+Node *string_literal(Token *t)
+{
+    if(t->kind == TK_STRING_LITERAL)
+    {
+        error("token is not string kind");
+    }
+
+    Node *n = calloc(1, sizeof(Node));
+    n->strliteral = t->str;
+    n->strliteral_len = t->len;
+    return n;
+}
+
+
 Node *declare()
 {
     if (is_func_decl())
@@ -746,11 +760,11 @@ Node *primary()
         return var(tok);
     }
 
-    if(token->kind == TK_STRING)
+    if(token->kind == TK_STRING_LITERAL)
     {
         //stub
         fprintf(stderr, "string: %s, %d\n", token->str, token->len);
-        consume_kind(TK_STRING);
+        consume_kind(TK_STRING_LITERAL);
         return new_node_num(3);
     }
 

@@ -13,7 +13,7 @@ typedef enum
     TK_FOR,
     TK_TYPE, //int, etc
     TK_SIZEOF,
-    TK_STRING,
+    TK_STRING_LITERAL,
 } TokenKind;
 
 typedef struct Token Token;
@@ -61,6 +61,7 @@ typedef enum
     ND_DEREF,
     ND_GVAR,
     ND_GVAR_DECL,
+    ND_STR_LITERAL,
 } NodeKind;
 
 typedef struct Node Node;
