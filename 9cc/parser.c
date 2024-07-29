@@ -746,5 +746,13 @@ Node *primary()
         return var(tok);
     }
 
+    if(token->kind == TK_STRING)
+    {
+        //stub
+        fprintf(stderr, "string: %s, %d\n", token->str, token->len);
+        consume_kind(TK_STRING);
+        return new_node_num(3);
+    }
+
     return new_node_num(expect_number());
 }
