@@ -253,15 +253,17 @@ Token *tokenize(char *p)
 
         if(*p == '"')
         {
+            //tokenの文字列にはdouble quoteを含めない
+            p++;
             char *cnt = p;
-            do 
+            while(*cnt != '"')
             {
                 cnt++;
             }
-            while(*p == '"');
             cur = new_token(TK_RESERVED, cur, p);
             cur->len = cnt - p;
-            p = cnt;
+            //skip right double quote
+            p = cnt + 1;
             continue;
         }
 
