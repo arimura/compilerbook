@@ -141,11 +141,11 @@ Node *declare_lvar()
 
     // 変数名の左側の型情報（"int *i[3]"の"int *"の部分）
     Type *base = calloc(1, sizeof(Type));
-    if(strncmp(type->str, "int", 3) == 0)
+    if (strncmp(type->str, "int", 3) == 0)
     {
         base->ty = INT;
     }
-    else if(strncmp(token->str, "char", 4) == 0)
+    else if (strncmp(type->str, "char", 4) == 0)
     {
         base->ty = CHAR;
     }
@@ -201,6 +201,10 @@ Node *declare_lvar()
     int current_offset = current_lvar ? current_lvar->offset : 0;
     int offset;
     if (l->type->ty == INT)
+    {
+        offset = 8;
+    }
+    else if (l->type->ty == CHAR)
     {
         offset = 8;
     }
@@ -271,13 +275,13 @@ Node *declare_gvar()
 
     // 変数名の左側の型情報（"int *i[3]"の"int *"の部分）
     Type *base = calloc(1, sizeof(Type));
-    if(strncmp(type->str, "int", 3) == 0)
+    if (strncmp(type->str, "int", 3) == 0)
     {
-    base->ty = INT;
+        base->ty = INT;
     }
-    else if(strncmp(type->str, "char", 4) == 0 )
+    else if (strncmp(type->str, "char", 4) == 0)
     {
-    base->ty = CHAR;
+        base->ty = CHAR;
     }
     Type *head = calloc(1, sizeof(Type));
     Type *c = head;
@@ -572,7 +576,6 @@ Node *var(Token *t)
 //     return n;
 // }
 
-
 Node *declare()
 {
     if (is_func_decl())
@@ -595,7 +598,7 @@ void program()
     while (!at_eof())
     {
         Node *n = declare();
-        if(n->kind == ND_GVAR_DECL)
+        if (n->kind == ND_GVAR_DECL)
         {
             data[idxData++] = n;
         }
