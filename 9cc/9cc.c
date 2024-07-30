@@ -243,6 +243,14 @@ Token *tokenize(char *p)
             continue;
         }
 
+        if (strncmp(p, "char", 4) == 0 && !is_alnum(p[4]))
+        {
+            cur = new_token(TK_TYPE, cur, p);
+            cur->len = 4;
+            p = p + 4;
+            continue;
+        }
+
         if (strncmp(p, "sizeof", 6) == 0 && !is_alnum(p[6]))
         {
             cur = new_token(TK_SIZEOF, cur, p);
