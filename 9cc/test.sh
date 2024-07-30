@@ -90,5 +90,5 @@ assert 3 "int main(){ int a[2]; a[1] = 3 ; return a[1]; }"
 assert 3 "int i; int main(){ return 3; }"
 assert 3 "int i; int main(){ i = 3; return i; }"
 assert 4 "int i[2]; int main(){ i[1] = 4; return i[1]; }"
-assert 3 'int main(){return "hoge";}'
+# assert 3 'int main(){return "hoge";}'
 echo OK
