@@ -133,7 +133,8 @@ Node *expr()
 
 Node *declare_lvar()
 {
-    if (!consume_kind(TK_TYPE))
+    Token *type = consume_type();
+    if (!type)
     {
         return NULL;
     }
@@ -141,7 +142,21 @@ Node *declare_lvar()
     // 変数名の左側の型情報（"int *i[3]"の"int *"の部分）
     //  現時点ではintのみ
     Type *base = calloc(1, sizeof(Type));
-    base->ty = INT;
+    //TODO: support char on gvar
+    fprintf(stderr, "token str: %s\n", token->str);
+    if(strncmp(type->str, "int", 3) == 0)
+    {
+        base->ty = INT;
+    }
+    else if(strncmp(token->str, "char", 4) == 0)
+    {
+        base->ty = CHAR;
+    }
+    else
+    {
+        error("unsupported type on token");
+    }
+
     Type *head = calloc(1, sizeof(Type));
     Type *c = head;
     while (consume("*"))
