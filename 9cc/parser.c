@@ -544,7 +544,10 @@ Node *string_literal(Token *t)
         error("token is not string kind");
     }
 
+    //TODO: check exsisting literal
+
     Node *n = calloc(1, sizeof(Node));
+    n->kind = ND_STR_LITERAL;
     n->strliteral = t->str;
     n->strliteral_len = t->len;
     return n;
