@@ -785,13 +785,13 @@ Node *primary()
         return var(tok);
     }
 
-    // if(token->kind == TK_STRING_LITERAL)
-    // {
-    //     //stub
-    //     fprintf(stderr, "string: %s, %d\n", token->str, token->len);
-    //     consume_kind(TK_STRING_LITERAL);
-    //     return new_node_num(3);
-    // }
+    if(token->kind == TK_STRING_LITERAL)
+    {
+        //stub
+        fprintf(stderr, "string: %s, %d\n", token->str, token->len);
+        consume_kind(TK_STRING_LITERAL);
+        return new_node_num(3);
+    }
 
     return new_node_num(expect_number());
 }
