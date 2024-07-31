@@ -278,6 +278,7 @@ void gen(Node *node)
         return;
     case ND_DEREF:
         gen(node->lhs);
+        node->type = node->lhs->type;
 
         printf("# deref\n");
         printf("    pop rax\n");
