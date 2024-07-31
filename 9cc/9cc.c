@@ -259,21 +259,21 @@ Token *tokenize(char *p)
             continue;
         }
 
-        // if(*p == '"')
-        // {
-        //     //tokenの文字列にはdouble quoteを含めない
-        //     p++;
-        //     char *cnt = p;
-        //     while(*cnt != '"')
-        //     {
-        //         cnt++;
-        //     }
-        //     cur = new_token(TK_STRING_LITERAL, cur, p);
-        //     cur->len = cnt - p;
-        //     //skip right double quote
-        //     p = cnt + 1;
-        //     continue;
-        // }
+        if(*p == '"')
+        {
+            //tokenの文字列にはdouble quoteを含めない
+            p++;
+            char *cnt = p;
+            while(*cnt != '"')
+            {
+                cnt++;
+            }
+            cur = new_token(TK_STRING_LITERAL, cur, p);
+            cur->len = cnt - p;
+            //skip right double quote
+            p = cnt + 1;
+            continue;
+        }
 
         if (is_ident1(*p))
         {
