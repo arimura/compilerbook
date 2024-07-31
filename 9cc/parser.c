@@ -560,21 +560,39 @@ Node *var(Token *t)
     error("Undefined var");
 }
 
-// Node *string_literal(Token *t)
-// {
-//     if(t->kind == TK_STRING_LITERAL)
-//     {
-//         error("token is not string kind");
-//     }
+Node *string_literal(Token *t)
+{
+    if (t->kind == TK_STRING_LITERAL)
+    {
+        error("token is not string kind");
+    }
 
-//     //TODO: check exsisting literal
+    bool exist = false;
+    int i = 0;
+    //TODO: to be refactored to map data structure
+    for (; data_string_literal[i]; i++)
+    {
+        Node *d = data_string_literal[i];
+        if (memcmp(d->strliteral, t->str, d->strliteral_len == 0))
+        {
+            exist = true;
+            break;
+        }
+    }
 
-//     Node *n = calloc(1, sizeof(Node));
-//     n->kind = ND_STR_LITERAL;
-//     n->strliteral = t->str;
-//     n->strliteral_len = t->len;
-//     return n;
-// }
+    Node *n = calloc(1, sizeof(Node));
+    n->kind = ND_STR_LITERAL;
+    n->strliteral = t->str;
+    n->strliteral_len = t->len;
+    n->offset = i;
+
+    if (!exist)
+    {
+        data_string_literal[i] = n;
+    }
+
+    return n;
+}
 
 Node *declare()
 {
@@ -785,10 +803,11 @@ Node *primary()
         return var(tok);
     }
 
-    if(token->kind == TK_STRING_LITERAL)
+    if (token->kind == TK_STRING_LITERAL)
     {
-        //stub
+        // stub
         consume_kind(TK_STRING_LITERAL);
+        string_literal(token);
         return new_node_num(3);
     }
 

@@ -13,6 +13,7 @@
 char *user_input;
 Token *token;
 Node *data[100];
+Node *data_string_literal[100];
 Node *text[100];
 
 void error(char *fmt, ...)
@@ -341,6 +342,10 @@ int main(int argc, char **argv)
     {
         gen(data[i]);
     }
+    for (int i =0; data_string_literal[i]; i++)
+    {
+        gen(data_string_literal[i]);
+    }
 
     printf(".section .text\n");
     for (int i = 0; text[i]; i++)
@@ -349,4 +354,11 @@ int main(int argc, char **argv)
     }
 
     return 0;
+}
+
+void gen_string_literal(Node *node)
+{
+    if(node->kind != ND_STR_LITERAL){
+        error("Not string literal node");
+    }
 }
