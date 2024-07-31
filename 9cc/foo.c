@@ -8,7 +8,12 @@ int foo(int x, int y)
 
 int qc_print(int x)
 {
-    printf("pc_print: %d\n", x);
+    printf("qc_print: %d\n", x);
+}
+
+int qc_print_str(char *s)
+{
+    printf("qc_print_str: %s\n", s);
 }
 
 void alloc4(void **p, int h, int i, int j, int k)
