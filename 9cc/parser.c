@@ -50,6 +50,15 @@ Token *consume_type()
     return t;
 }
 
+Token *consume_string_literal()
+{
+    if(token->kind != TK_STRING_LITERAL)
+        return NULL;
+    Token *t = token;
+    token = token->next;
+    return t;
+}
+
 bool consume_kind(TokenKind kind)
 {
     if (token->kind != kind)
@@ -562,7 +571,7 @@ Node *var(Token *t)
 
 Node *string_literal(Token *t)
 {
-    if (t->kind == TK_STRING_LITERAL)
+    if (t->kind != TK_STRING_LITERAL)
     {
         error("token is not string kind");
     }
@@ -586,10 +595,13 @@ Node *string_literal(Token *t)
     n->strliteral_len = t->len;
     n->offset = i;
 
+    fprintf(stderr, "strliteral");
     if (!exist)
     {
         data_string_literal[i] = n;
     }
+    data_string_literal[i+1] = NULL;
+    fprintf(stderr, "strliteral end");
 
     return n;
 }
@@ -803,11 +815,11 @@ Node *primary()
         return var(tok);
     }
 
-    if (token->kind == TK_STRING_LITERAL)
+    Token *sl = consume_string_literal();
+    if (sl)
     {
         // stub
-        consume_kind(TK_STRING_LITERAL);
-        string_literal(token);
+        string_literal(sl);
         return new_node_num(3);
     }
 

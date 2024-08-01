@@ -11,6 +11,17 @@ char *get_name(char *org, int len)
     return name;
 }
 
+char *str_literal_name(Node *n){
+    char *b = malloc(256);
+    if(n->kind != ND_STR_LITERAL){
+        error("Not string literal node");
+    }
+
+    sprintf(b,".LC%d", n->offset);
+
+    return b;
+}
+
 // Generates the assembly code to push the address of a local variable onto the stack.
 void gen_lval_address(Node *node)
 {
@@ -340,4 +351,14 @@ void gen(Node *node)
     }
 
     printf("    push rax\n");
+}
+
+void gen_string_literal(Node *node)
+{
+    if(node->kind != ND_STR_LITERAL){
+        error("Not string literal node");
+    }
+
+    printf("%s:\n", str_literal_name(node));
+    printf("    .string \"%.*s\"\n", node->strliteral_len, node->strliteral);
 }

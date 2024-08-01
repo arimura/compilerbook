@@ -142,6 +142,7 @@ void printCode()
     }
 }
 
+
 /*
  * Tokenizer
  */
@@ -354,11 +355,4 @@ int main(int argc, char **argv)
     }
 
     return 0;
-}
-
-void gen_string_literal(Node *node)
-{
-    if(node->kind != ND_STR_LITERAL){
-        error("Not string literal node");
-    }
 }
