@@ -95,5 +95,5 @@ assert 4 "int i[2]; int main(){ i[1] = 4; return i[1]; }"
 assert 4 "int main(){char c; c = 4; return c; }"
 assert 3 "int main(){char x[3]; x[0] = -1; x[1] = 2; int y; y =4; return x[0] + y; }"
 assert 1 "int main(){int a[2]; a[0] = 65; qc_print_str(a); return 1;}"
-assert 3 'int main(){return "hoge";}'
+assert 3 'int main(){char *a; a = "hoge"; qc_print_str(a); return 3; }'
 echo OK

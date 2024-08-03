@@ -141,6 +141,13 @@ void gen(Node *node)
         printf("    push rax\n");
         printf("# gvar end\n");
         return;
+    case ND_STR_LITERAL:
+        printf("# str literal\n");
+        // printf("    mov rax, OFFSET FLAT:%s\n", str_literal_name(node));
+        printf("    lea rax, [rip + %s]\n", str_literal_name(node));
+        printf("    push rax\n");
+        printf("# str literal end\n");
+        return;
     case ND_ASSIGN:
         gen_address(node->lhs);
         gen(node->rhs);

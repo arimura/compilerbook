@@ -816,9 +816,7 @@ Node *primary()
     Token *sl = consume_string_literal();
     if (sl)
     {
-        // stub
-        string_literal(sl);
-        return new_node_num(3);
+        return string_literal(sl);
     }
 
     return new_node_num(expect_number());
