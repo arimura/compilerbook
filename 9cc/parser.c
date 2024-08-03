@@ -595,13 +595,11 @@ Node *string_literal(Token *t)
     n->strliteral_len = t->len;
     n->offset = i;
 
-    fprintf(stderr, "strliteral");
     if (!exist)
     {
         data_string_literal[i] = n;
     }
     data_string_literal[i+1] = NULL;
-    fprintf(stderr, "strliteral end");
 
     return n;
 }

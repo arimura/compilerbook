@@ -345,7 +345,7 @@ int main(int argc, char **argv)
     }
     for (int i =0; data_string_literal[i]; i++)
     {
-        gen(data_string_literal[i]);
+        gen_string_literal(data_string_literal[i]);
     }
 
     printf(".section .text\n");
