@@ -1,9 +1,17 @@
 #!/bin/bash
+
 assert() {
     expected="$1"
     input="$2"
 
-    ./9cc "$input" > tmp.s
+    #check if input has .c extension
+    if [[ $input == *".c" ]]; then
+        ./9cc --path "$input" > tmp.s
+    else
+        ./9cc "$input" > tmp.s
+    fi
+
+    # ./9cc "$input" > tmp.s
     # cc -o tmp tmp.s
     cc -c -o tmp.o tmp.s
     cc -o tmp tmp.o foo.o
@@ -96,4 +104,5 @@ assert 4 "int main(){char c; c = 4; return c; }"
 assert 3 "int main(){char x[3]; x[0] = -1; x[1] = 2; int y; y =4; return x[0] + y; }"
 assert 1 "int main(){int a[2]; a[0] = 65; qc_print_str(a); return 1;}"
 assert 3 'int main(){char *a; a = "hoge"; qc_print_str(a); return 3; }'
+assert 2 "test/t1.c"
 echo OK

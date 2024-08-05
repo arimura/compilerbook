@@ -143,7 +143,6 @@ void printCode()
     }
 }
 
-
 /*
  * Tokenizer
  */
@@ -262,18 +261,18 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if(*p == '"')
+        if (*p == '"')
         {
-            //tokenの文字列にはdouble quoteを含めない
+            // tokenの文字列にはdouble quoteを含めない
             p++;
             char *cnt = p;
-            while(*cnt != '"')
+            while (*cnt != '"')
             {
                 cnt++;
             }
             cur = new_token(TK_STRING_LITERAL, cur, p);
             cur->len = cnt - p;
-            //skip right double quote
+            // skip right double quote
             p = cnt + 1;
             continue;
         }
@@ -299,7 +298,7 @@ Token *tokenize(char *p)
             continue;
         }
 
-    if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == ')' || *p == '(' || *p == '>' || *p == '<' || *p == '=' || *p == ';' || *p == '{' || *p == '}' || *p == ',' || *p == '&' || *p == '[' || *p == ']')
+        if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == ')' || *p == '(' || *p == '>' || *p == '<' || *p == '=' || *p == ';' || *p == '{' || *p == '}' || *p == ',' || *p == '&' || *p == '[' || *p == ']')
         {
             cur = new_token(TK_RESERVED, cur, p++);
             cur->len = 1;
@@ -322,60 +321,68 @@ Token *tokenize(char *p)
 }
 
 // 指定されたファイルの内容を返す
-char *read_file(char *path) {
-  // ファイルを開く
-  FILE *fp = fopen(path, "r");
-  if (!fp)
-    error("cannot open %s: %s", path, strerror(errno));
+char *read_file(char *path)
+{
+    // ファイルを開く
+    FILE *fp = fopen(path, "r");
+    if (!fp)
+        error("cannot open %s: %s", path, strerror(errno));
 
-  // ファイルの長さを調べる
-  if (fseek(fp, 0, SEEK_END) == -1)
-    error("%s: fseek: %s", path, strerror(errno));
-  size_t size = ftell(fp);
-  if (fseek(fp, 0, SEEK_SET) == -1)
-    error("%s: fseek: %s", path, strerror(errno));
+    // ファイルの長さを調べる
+    if (fseek(fp, 0, SEEK_END) == -1)
+        error("%s: fseek: %s", path, strerror(errno));
+    size_t size = ftell(fp);
+    if (fseek(fp, 0, SEEK_SET) == -1)
+        error("%s: fseek: %s", path, strerror(errno));
 
-  // ファイル内容を読み込む
-  char *buf = calloc(1, size + 2);
-  fread(buf, size, 1, fp);
+    // ファイル内容を読み込む
+    char *buf = calloc(1, size + 2);
+    fread(buf, size, 1, fp);
 
-  // ファイルが必ず"\n\0"で終わっているようにする
-  if (size == 0 || buf[size - 1] != '\n')
-    buf[size++] = '\n';
-  buf[size] = '\0';
-  fclose(fp);
-  return buf;
+    // ファイルが必ず"\n\0"で終わっているようにする
+    if (size == 0 || buf[size - 1] != '\n')
+        buf[size++] = '\n';
+    buf[size] = '\0';
+    fclose(fp);
+    return buf;
 }
 
 void compile_program(const char *program)
 {
-
 }
 
 int main(int argc, char **argv)
 {
-    if (argc != 2)
+    if (argc == 2)
+    {
+        user_input = argv[1];
+    }
+    else if (argc == 3 && strcmp(argv[1], "--path") == 0)
+    {
+        user_input = read_file(argv[2]);
+    }
+    else
     {
         error("引数の個数が正しくありません");
         return 1;
     }
+
     // no buffering
     setvbuf(stdout, NULL, _IONBF, 0);
 
-    user_input = argv[1];
     token = tokenize(user_input);
     // printToken(token);
     program();
     // printCode();
 
-    printf(".intel_syntax noprefix\n");    
+    printf(".intel_syntax noprefix\n");
 
     printf(".section .data\n");
     for (int i = 0; data[i]; i++)
     {
         gen(data[i]);
     }
-    for (int i =0; data_string_literal[i]; i++)
+    for (int i = 0; data_string_literal[i]; i++)
     {
         gen_string_literal(data_string_literal[i]);
     }
