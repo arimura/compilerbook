@@ -347,10 +347,6 @@ char *read_file(char *path)
     return buf;
 }
 
-void compile_program(const char *program)
-{
-}
-
 int main(int argc, char **argv)
 {
     if (argc == 2)
