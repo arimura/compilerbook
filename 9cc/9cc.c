@@ -197,6 +197,23 @@ Token *tokenize(char *p)
             continue;
         }
 
+        if (strncmp(p, "//", 2) == 0)
+        {
+            p += 2;
+            while (*p != '\n')
+                p++;
+            continue;
+        }
+
+        if (strncmp(p, "/*", 2) == 0)
+        {
+            char *q = strstr(p + 2, "*/");
+            if (!q)
+                error("コメントが閉じられていません");
+            p = q + 2;
+            continue;
+        }
+
         if (strncmp(p, "return", 6) == 0 && !is_alnum(p[6]))
         {
             cur = new_token(TK_RETURN, cur, p);
